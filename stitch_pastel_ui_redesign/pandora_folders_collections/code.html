@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+
+<html lang="en"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet"/><link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700&amp;family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/><style>@layer base{html,body{width:100vw;margin:0;padding:0;}body{overscroll-behavior:none;}.pb-safe{padding-bottom:env(safe-area-inset-bottom,0px);}.pt-safe{padding-top:env(safe-area-inset-top,0px);}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config = { darkMode: "class", theme: { extend: { colors: { "error-container": "#ffdad6", "on-error": "#ffffff", "surface-dim": "#d2d9f4", "on-surface-variant": "#464555", "outline-variant": "#c7c4d8", "on-tertiary-fixed-variant": "#004b73", "on-primary": "#ffffff", "inverse-surface": "#283044", "on-background": "#131b2e", "primary-fixed-dim": "#c3c0ff", "on-surface": "#131b2e", "on-primary-fixed-variant": "#3323cc", "on-primary-fixed": "#0f0069", "surface-container-high": "#e2e7ff", "secondary-container": "#fd761a", "surface-container-highest": "#dae2fd", "tertiary-fixed": "#cce5ff", "on-secondary": "#ffffff", "on-tertiary": "#ffffff", "inverse-primary": "#c3c0ff", "on-primary-container": "#dad7ff", "surface-bright": "#faf8ff", "on-secondary-fixed": "#341100", "surface-variant": "#dae2fd", "background": "#faf8ff", "on-secondary-container": "#5c2400", "surface-container": "#eaedff", "secondary-fixed": "#ffdbca", "inverse-on-surface": "#eef0ff", "surface-container-lowest": "#ffffff", "on-tertiary-fixed": "#001d31", "outline": "#777587", "tertiary-fixed-dim": "#93ccff", "on-secondary-fixed-variant": "#783200", "primary-fixed": "#e2dfff", "tertiary": "#004c76", "surface": "#faf8ff", "on-tertiary-container": "#bedfff", "primary-container": "#4f46e5", "secondary-fixed-dim": "#ffb690", "error": "#ba1a1a", "surface-container-low": "#f2f3ff", "surface-tint": "#4d44e3", "tertiary-container": "#00659a", "secondary": "#9d4300", "primary": "#3525cd", "on-error-container": "#93000a" }, borderRadius: { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px" }, spacing: { "gutter-tablet": "1.5rem", "space-md": "1rem", "space-xl": "1.75rem", "margin-tablet": "2rem", "space-xs": "0.25rem", "space-sm": "0.5rem", "space-lg": "1.25rem", "gutter": "1rem", "margin": "1.25rem" }, fontFamily: { "label-sm": ["Hanken Grotesk"], "headline-md": ["Newsreader"], "label-md": ["Hanken Grotesk"], "body-sm": ["Hanken Grotesk"], "display-lg": ["Newsreader"], "headline-sm": ["Hanken Grotesk"], "body-md": ["Hanken Grotesk"], "body-lg": ["Hanken Grotesk"], "display-lg-mobile": ["Newsreader"], "headline-lg": ["Newsreader"], "label-lg": ["Hanken Grotesk"] }, fontSize: { "label-sm": ["10px", { "lineHeight": "14px", "letterSpacing": "0.04em", "fontWeight": "700" }], "headline-md": ["22px", { "lineHeight": "30px", "fontWeight": "500" }], "label-md": ["12px", { "lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "600" }], "body-sm": ["12px", { "lineHeight": "18px", "fontWeight": "400" }], "display-lg": ["40px", { "lineHeight": "48px", "letterSpacing": "-0.02em", "fontWeight": "400" }], "headline-sm": ["18px", { "lineHeight": "24px", "fontWeight": "600" }], "body-md": ["14px", { "lineHeight": "22px", "fontWeight": "400" }], "body-lg": ["16px", { "lineHeight": "26px", "fontWeight": "400" }], "display-lg-mobile": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "400" }], "headline-lg": ["28px", { "lineHeight": "36px", "letterSpacing": "-0.01em", "fontWeight": "500" }], "label-lg": ["14px", { "lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "600" }] } } } };</script></head><body class="bg-surface text-on-surface font-body-md text-body-md flex flex-col min-h-screen"><header class="fixed top-0 w-full z-50 pt-safe bg-surface/85 backdrop-blur-xl shadow-[0_1px_8px_rgba(0,0,0,0.03)]"><div class="h-6 px-margin flex items-center justify-between text-on-surface-variant text-[11px] select-none"><span class="font-label-sm text-label-sm font-semibold tracking-wide">9:41</span><div class="flex items-center gap-1.5"><span class="material-symbols-outlined text-[14px]">signal_cellular_alt</span><span class="material-symbols-outlined text-[14px]">wifi</span><span class="material-symbols-outlined text-[14px]">battery_full</span></div></div><div class="h-16 px-margin flex items-center justify-between"><div class="flex items-center gap-space-sm min-w-0"><h1 class="font-headline-md text-headline-md text-on-surface truncate tracking-tight">Organize</h1><div class="flex items-center gap-1 px-2 py-0.5 rounded-full bg-surface-container-high text-on-surface-variant"><span class="material-symbols-outlined text-[13px] text-tertiary">lock</span><span class="font-label-sm text-label-sm uppercase tracking-wider text-tertiary">Vault</span></div></div><div class="flex items-center gap-space-xs"><button aria-label="Notifications" class="w-11 h-11 flex items-center justify-center rounded-full text-on-surface-variant hover:bg-surface-container transition-colors"><span class="material-symbols-outlined text-[20px]">notifications</span></button><div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center ml-1"><span class="material-symbols-outlined text-on-primary text-[18px]">person</span></div></div></div></header><main class="flex flex-col relative w-full pt-16 pb-24 px-margin bg-surface"><div class="flex flex-col w-full pb-8">
+<!-- Segmented Navigation Pill Bar -->
+<div class="flex items-center gap-space-xs p-1.5 rounded-full bg-surface-container mb-space-lg shadow-sm">
+<button class="flex-1 py-2 px-space-sm rounded-full bg-surface-container-lowest text-primary shadow-sm flex items-center justify-center gap-1.5 transition-all">
+<span class="material-symbols-outlined text-[17px]">folder</span>
+<span class="font-label-md text-label-md">Folders</span>
+</button>
+<button class="flex-1 py-2 px-space-sm rounded-full text-on-surface-variant hover:text-on-surface flex items-center justify-center gap-1.5 transition-colors">
+<span class="material-symbols-outlined text-[17px]">auto_awesome_motion</span>
+<span class="font-label-md text-label-md">Collections</span>
+<span class="bg-surface-container-highest text-on-surface-variant px-1.5 py-0.2 text-[10px] rounded-full font-label-sm">4</span>
+</button>
+<button class="flex-1 py-2 px-space-sm rounded-full text-on-surface-variant hover:text-on-surface flex items-center justify-center gap-1.5 transition-colors">
+<span class="material-symbols-outlined text-[17px]">tag</span>
+<span class="font-label-md text-label-md">Tags</span>
+<span class="bg-surface-container-highest text-on-surface-variant px-1.5 py-0.2 text-[10px] rounded-full font-label-sm">32</span>
+</button>
+</div>
+<!-- Collections Spotlight Header -->
+<div class="flex items-center justify-between mb-space-sm">
+<div class="flex items-baseline gap-2">
+<h2 class="font-headline-sm text-headline-sm text-on-surface tracking-tight">Curated Collections</h2>
+<span class="font-label-sm text-label-sm uppercase tracking-wider text-outline">Spotlight</span>
+</div>
+<button class="text-primary font-label-md text-label-md flex items-center gap-0.5 hover:opacity-80 active:scale-95 transition-transform">
+<span>View all</span>
+<span class="material-symbols-outlined text-[16px]">chevron_right</span>
+</button>
+</div>
+<!-- Horizontal Scroll Carousel for Collections -->
+<div class="-mx-margin px-margin overflow-x-auto no-scrollbar flex items-stretch gap-space-md pt-1 pb-space-lg">
+<!-- Card 1: AI & HCI Research -->
+<div class="flex-shrink-0 w-[240px] p-5 rounded-2xl bg-surface-container-lowest shadow-sm flex flex-col justify-between hover:shadow-md transition-shadow relative overflow-hidden group">
+<div class="absolute top-0 right-0 w-24 h-24 bg-primary-fixed/30 rounded-bl-[48px] pointer-events-none -mr-4 -mt-4 transition-transform group-hover:scale-110"></div>
+<div>
+<div class="flex items-center justify-between mb-3">
+<div class="w-9 h-9 rounded-xl bg-primary-fixed flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-[19px]">psychology</span>
+</div>
+<span class="font-label-sm text-label-sm text-outline flex items-center gap-1">
+<span class="w-1.5 h-1.5 rounded-full bg-primary inline-block animate-pulse"></span>
+            2h ago
+          </span>
+</div>
+<h3 class="font-headline-md text-headline-md text-on-surface leading-tight mb-1">AI &amp; HCI Research</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant line-clamp-1">Affordances, agent UX, mental models</p>
+</div>
+<div class="pt-4 flex items-center justify-between mt-auto">
+<div class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[15px] text-primary">article</span>
+<span class="font-label-md text-label-md text-on-surface-variant">18 artifacts</span>
+</div>
+<div class="w-6 h-6 rounded-full bg-surface-container flex items-center justify-center text-on-surface-variant">
+<span class="material-symbols-outlined text-[14px]">arrow_forward</span>
+</div>
+</div>
+</div>
+<!-- Card 2: Hardware Prototypes -->
+<div class="flex-shrink-0 w-[240px] p-5 rounded-2xl bg-surface-container-lowest shadow-sm flex flex-col justify-between hover:shadow-md transition-shadow relative overflow-hidden group">
+<div class="absolute top-0 right-0 w-24 h-24 bg-secondary-fixed/40 rounded-bl-[48px] pointer-events-none -mr-4 -mt-4 transition-transform group-hover:scale-110"></div>
+<div>
+<div class="flex items-center justify-between mb-3">
+<div class="w-9 h-9 rounded-xl bg-secondary-fixed flex items-center justify-center text-secondary">
+<span class="material-symbols-outlined text-[19px]">devices</span>
+</div>
+<span class="font-label-sm text-label-sm text-outline">Yesterday</span>
+</div>
+<h3 class="font-headline-md text-headline-md text-on-surface leading-tight mb-1">Hardware Prototypes</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant line-clamp-1">E-ink readers, mechanical switches</p>
+</div>
+<div class="pt-4 flex items-center justify-between mt-auto">
+<div class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[15px] text-secondary">memory</span>
+<span class="font-label-md text-label-md text-on-surface-variant">9 artifacts</span>
+</div>
+<div class="w-6 h-6 rounded-full bg-surface-container flex items-center justify-center text-on-surface-variant">
+<span class="material-symbols-outlined text-[14px]">arrow_forward</span>
+</div>
+</div>
+</div>
+<!-- Card 3: Product Strategy 2025 -->
+<div class="flex-shrink-0 w-[240px] p-5 rounded-2xl bg-surface-container-lowest shadow-sm flex flex-col justify-between hover:shadow-md transition-shadow relative overflow-hidden group">
+<div class="absolute top-0 right-0 w-24 h-24 bg-tertiary-fixed/50 rounded-bl-[48px] pointer-events-none -mr-4 -mt-4 transition-transform group-hover:scale-110"></div>
+<div>
+<div class="flex items-center justify-between mb-3">
+<div class="w-9 h-9 rounded-xl bg-tertiary-fixed flex items-center justify-center text-tertiary">
+<span class="material-symbols-outlined text-[19px]">insights</span>
+</div>
+<span class="font-label-sm text-label-sm text-outline">Oct 12</span>
+</div>
+<h3 class="font-headline-md text-headline-md text-on-surface leading-tight mb-1">Product Strategy 2025</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant line-clamp-1">Roadmaps, positioning, quarterly OKRs</p>
+</div>
+<div class="pt-4 flex items-center justify-between mt-auto">
+<div class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[15px] text-tertiary">inventory_2</span>
+<span class="font-label-md text-label-md text-on-surface-variant">24 artifacts</span>
+</div>
+<div class="w-6 h-6 rounded-full bg-surface-container flex items-center justify-center text-on-surface-variant">
+<span class="material-symbols-outlined text-[14px]">arrow_forward</span>
+</div>
+</div>
+</div>
+<!-- New Collection Action Pill/Card -->
+<div class="flex-shrink-0 w-[140px] p-4 rounded-2xl bg-surface-container-low flex flex-col items-center justify-center text-center gap-2 cursor-pointer hover:bg-surface-container active:scale-98 transition-all">
+<div class="w-10 h-10 rounded-full bg-surface-container-lowest text-primary flex items-center justify-center shadow-sm">
+<span class="material-symbols-outlined text-[20px]">add</span>
+</div>
+<span class="font-label-md text-label-md text-primary font-semibold">New<br/>Collection</span>
+</div>
+</div>
+<!-- Folder Directory Header & Actions -->
+<div class="flex items-center justify-between mt-space-sm mb-space-md">
+<div>
+<h2 class="font-headline-sm text-headline-sm text-on-surface">Library Folders</h2>
+<p class="font-body-sm text-body-sm text-on-surface-variant">4 root directories, 154 total items</p>
+</div>
+<button class="h-10 px-3.5 rounded-full bg-primary text-on-primary font-label-md text-label-md flex items-center gap-1.5 shadow-sm active:scale-95 transition-transform">
+<span class="material-symbols-outlined text-[18px]">create_new_folder</span>
+<span>New Folder</span>
+</button>
+</div>
+<!-- Folders Tree List -->
+<div class="flex flex-col gap-space-sm">
+<!-- Folder 1: Design Systems & UI (Expanded / Subfolders) -->
+<div class="rounded-2xl bg-surface-container-lowest shadow-sm overflow-hidden">
+<div class="p-4 flex items-center justify-between cursor-pointer hover:bg-surface-container-low/50 transition-colors" id="folder-toggle-1">
+<div class="flex items-center gap-space-md min-w-0">
+<div class="w-11 h-11 rounded-xl bg-primary-fixed flex items-center justify-center text-primary flex-shrink-0">
+<span class="material-symbols-outlined text-[22px]">folder</span>
+</div>
+<div class="min-w-0">
+<div class="flex items-center gap-2">
+<span class="font-label-lg text-label-lg text-on-surface truncate">Design Systems &amp; UI</span>
+<span class="bg-primary-fixed text-on-primary-fixed-variant font-label-sm text-[10px] px-1.5 py-0.5 rounded-full uppercase">2 Sub</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant truncate">42 items · Modified 3h ago</p>
+</div>
+</div>
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-outline text-[20px] transition-transform duration-200" id="folder-chevron-1">expand_more</span>
+</div>
+</div>
+<!-- Subfolders Container -->
+<div class="bg-surface-container-low px-4 py-2.5 flex flex-col gap-1.5" id="folder-sub-1">
+<!-- Subfolder 1 -->
+<div class="flex items-center justify-between py-2 px-3 rounded-xl bg-surface-container-lowest/80 hover:bg-surface-container-lowest transition-colors cursor-pointer ml-5">
+<div class="flex items-center gap-2.5 min-w-0">
+<span class="material-symbols-outlined text-[18px] text-tertiary">subdirectory_arrow_right</span>
+<span class="material-symbols-outlined text-[18px] text-outline">folder_open</span>
+<span class="font-body-md text-body-md text-on-surface truncate">Mobile Guidelines</span>
+</div>
+<span class="font-label-sm text-label-sm text-on-surface-variant bg-surface-container px-2 py-0.5 rounded-full">26</span>
+</div>
+<!-- Subfolder 2 -->
+<div class="flex items-center justify-between py-2 px-3 rounded-xl bg-surface-container-lowest/80 hover:bg-surface-container-lowest transition-colors cursor-pointer ml-5">
+<div class="flex items-center gap-2.5 min-w-0">
+<span class="material-symbols-outlined text-[18px] text-tertiary">subdirectory_arrow_right</span>
+<span class="material-symbols-outlined text-[18px] text-outline">folder_open</span>
+<span class="font-body-md text-body-md text-on-surface truncate">Tokens &amp; Specs</span>
+</div>
+<span class="font-label-sm text-label-sm text-on-surface-variant bg-surface-container px-2 py-0.5 rounded-full">16</span>
+</div>
+</div>
+</div>
+<!-- Folder 2: Technical Architecture -->
+<div class="rounded-2xl bg-surface-container-lowest shadow-sm overflow-hidden">
+<div class="p-4 flex items-center justify-between cursor-pointer hover:bg-surface-container-low/50 transition-colors" id="folder-toggle-2">
+<div class="flex items-center gap-space-md min-w-0">
+<div class="w-11 h-11 rounded-xl bg-primary-fixed flex items-center justify-center text-primary flex-shrink-0">
+<span class="material-symbols-outlined text-[22px]">folder</span>
+</div>
+<div class="min-w-0">
+<div class="flex items-center gap-2">
+<span class="font-label-lg text-label-lg text-on-surface truncate">Technical Architecture</span>
+<span class="bg-surface-container-high text-on-surface-variant font-label-sm text-[10px] px-1.5 py-0.5 rounded-full uppercase">1 Sub</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant truncate">31 items · Modified Oct 14</p>
+</div>
+</div>
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-outline text-[20px] transition-transform duration-200" id="folder-chevron-2">expand_more</span>
+</div>
+</div>
+<!-- Subfolder Container -->
+<div class="bg-surface-container-low px-4 py-2.5 flex flex-col gap-1.5" id="folder-sub-2">
+<div class="flex items-center justify-between py-2 px-3 rounded-xl bg-surface-container-lowest/80 hover:bg-surface-container-lowest transition-colors cursor-pointer ml-5">
+<div class="flex items-center gap-2.5 min-w-0">
+<span class="material-symbols-outlined text-[18px] text-tertiary">subdirectory_arrow_right</span>
+<span class="material-symbols-outlined text-[18px] text-outline">folder_open</span>
+<span class="font-body-md text-body-md text-on-surface truncate">Distributed Systems</span>
+</div>
+<span class="font-label-sm text-label-sm text-on-surface-variant bg-surface-container px-2 py-0.5 rounded-full">31</span>
+</div>
+</div>
+</div>
+<!-- Folder 3: Book Notes & Summaries -->
+<div class="rounded-2xl bg-surface-container-lowest shadow-sm p-4 flex items-center justify-between cursor-pointer hover:bg-surface-container-low/40 active:scale-[0.99] transition-all">
+<div class="flex items-center gap-space-md min-w-0">
+<div class="w-11 h-11 rounded-xl bg-primary-fixed flex items-center justify-center text-primary flex-shrink-0">
+<span class="material-symbols-outlined text-[22px]">folder</span>
+</div>
+<div class="min-w-0">
+<span class="font-label-lg text-label-lg text-on-surface truncate block">Book Notes &amp; Summaries</span>
+<p class="font-body-sm text-body-sm text-on-surface-variant truncate">28 items · Modified Oct 11</p>
+</div>
+</div>
+<div class="flex items-center gap-3">
+<span class="font-label-sm text-label-sm text-outline">28 files</span>
+<span class="material-symbols-outlined text-outline text-[20px]">chevron_right</span>
+</div>
+</div>
+<!-- Folder 4: Daily Inspiration -->
+<div class="rounded-2xl bg-surface-container-lowest shadow-sm p-4 flex items-center justify-between cursor-pointer hover:bg-surface-container-low/40 active:scale-[0.99] transition-all">
+<div class="flex items-center gap-space-md min-w-0">
+<div class="w-11 h-11 rounded-xl bg-primary-fixed flex items-center justify-center text-primary flex-shrink-0">
+<span class="material-symbols-outlined text-[22px]">folder</span>
+</div>
+<div class="min-w-0">
+<span class="font-label-lg text-label-lg text-on-surface truncate block">Daily Inspiration</span>
+<p class="font-body-sm text-body-sm text-on-surface-variant truncate">53 items · Modified yesterday</p>
+</div>
+</div>
+<div class="flex items-center gap-3">
+<span class="font-label-sm text-label-sm text-outline">53 files</span>
+<span class="material-symbols-outlined text-outline text-[20px]">chevron_right</span>
+</div>
+</div>
+</div>
+<!-- Recent Tags Cloud Section -->
+<div class="mt-space-xl">
+<div class="flex items-center justify-between mb-space-sm">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-[20px] text-tertiary">label</span>
+<h2 class="font-headline-sm text-headline-sm text-on-surface">Recent Tags</h2>
+</div>
+<span class="font-label-sm text-label-sm text-on-surface-variant">32 tags indexed</span>
+</div>
+<div class="p-4 rounded-2xl bg-surface-container-lowest shadow-sm">
+<div class="flex flex-wrap gap-2">
+<!-- AI/Assistive Tag -->
+<button class="h-8 px-3 rounded-full bg-primary-fixed text-primary text-label-md font-label-md flex items-center gap-1.5 hover:opacity-90 active:scale-95 transition-all">
+<span class="material-symbols-outlined text-[14px]">auto_awesome</span>
+<span>#machine-learning</span>
+<span class="text-[10px] opacity-70">14</span>
+</button>
+<!-- Pastel Peach -->
+<button class="h-8 px-3 rounded-full bg-secondary-fixed text-on-secondary-fixed text-label-md font-label-md flex items-center gap-1.5 hover:opacity-90 active:scale-95 transition-all">
+<span>#industrial-design</span>
+<span class="text-[10px] opacity-70">8</span>
+</button>
+<!-- Soft Sky Blue -->
+<button class="h-8 px-3 rounded-full bg-tertiary-fixed text-on-tertiary-fixed text-label-md font-label-md flex items-center gap-1.5 hover:opacity-90 active:scale-95 transition-all">
+<span>#architecture</span>
+<span class="text-[10px] opacity-70">19</span>
+</button>
+<!-- Neutral Surface Variant -->
+<button class="h-8 px-3 rounded-full bg-surface-container-high text-on-surface-variant text-label-md font-label-md flex items-center gap-1.5 hover:opacity-90 active:scale-95 transition-all">
+<span>#typography</span>
+<span class="text-[10px] opacity-70">22</span>
+</button>
+<!-- Warm Accent -->
+<button class="h-8 px-3 rounded-full bg-secondary-fixed text-on-secondary-fixed text-label-md font-label-md flex items-center gap-1.5 hover:opacity-90 active:scale-95 transition-all">
+<span>#ergonomics</span>
+<span class="text-[10px] opacity-70">5</span>
+</button>
+<!-- Primary Fixed Light -->
+<button class="h-8 px-3 rounded-full bg-primary-fixed text-primary text-label-md font-label-md flex items-center gap-1.5 hover:opacity-90 active:scale-95 transition-all">
+<span>#heuristics</span>
+<span class="text-[10px] opacity-70">11</span>
+</button>
+<!-- Tertiary Fixed Light -->
+<button class="h-8 px-3 rounded-full bg-tertiary-fixed text-on-tertiary-fixed text-label-md font-label-md flex items-center gap-1.5 hover:opacity-90 active:scale-95 transition-all">
+<span>#distributed-systems</span>
+<span class="text-[10px] opacity-70">7</span>
+</button>
+<!-- More Tags Button -->
+<button class="h-8 px-3 rounded-full bg-surface-container text-on-surface-variant text-label-md font-label-md flex items-center gap-1 hover:bg-surface-container-high transition-colors">
+<span>+25 more</span>
+<span class="material-symbols-outlined text-[15px]">arrow_forward</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Bottom Archival Status Note -->
+<div class="mt-space-lg flex items-center justify-center gap-2 py-3 px-4 rounded-xl bg-surface-container-low text-on-surface-variant text-center">
+<span class="material-symbols-outlined text-[16px] text-tertiary">sync</span>
+<span class="font-body-sm text-body-sm">Local vault synced · All 4 collections cached offline</span>
+</div>
+</div>
+<script>
+  // Simple folder accordions for touch interaction
+  const toggleFolder = (toggleId, subId, chevronId) => {
+    const toggle = document.getElementById(toggleId);
+    const sub = document.getElementById(subId);
+    const chevron = document.getElementById(chevronId);
+    if (!toggle || !sub || !chevron) return;
+
+    toggle.addEventListener('click', () => {
+      const isHidden = sub.classList.contains('hidden');
+      if (isHidden) {
+        sub.classList.remove('hidden');
+        chevron.style.transform = 'rotate(0deg)';
+      } else {
+        sub.classList.add('hidden');
+        chevron.style.transform = 'rotate(-90deg)';
+      }
+    });
+  };
+
+  toggleFolder('folder-toggle-1', 'folder-sub-1', 'folder-chevron-1');
+  toggleFolder('folder-toggle-2', 'folder-sub-2', 'folder-chevron-2');
+</script></main><nav class="fixed bottom-0 w-full z-50 pb-safe bg-surface/90 backdrop-blur-xl shadow-[0_-2px_12px_rgba(0,0,0,0.03)]" data-active-classes="[&amp;&gt;.pill]:bg-primary-fixed [&amp;&gt;.pill&gt;.nav-icon]:text-primary [&amp;&gt;.nav-label]:text-primary [&amp;&gt;.nav-label]:font-semibold"><div class="flex justify-around items-center h-20 px-space-xs"><a class="group flex flex-col items-center justify-center min-w-[64px] min-h-[48px] py-1 text-on-surface-variant transition-colors" data-path="timeline" href="#"><div class="pill flex items-center justify-center w-14 h-8 rounded-full transition-colors"><span class="nav-icon material-symbols-outlined text-[22px]">calendar_today</span></div><span class="nav-label font-label-sm text-label-sm mt-1 transition-colors">Timeline</span></a><a aria-current="page" class="group flex flex-col items-center justify-center min-w-[64px] min-h-[48px] py-1 text-on-surface-variant transition-colors [&amp;&gt;.pill]:bg-primary-fixed [&amp;&gt;.pill&gt;.nav-icon]:text-primary [&amp;&gt;.nav-label]:text-primary [&amp;&gt;.nav-label]:font-semibold" data-path="organize" href="#"><div class="pill flex items-center justify-center w-14 h-8 rounded-full transition-colors"><span class="nav-icon material-symbols-outlined text-[22px]">folder_open</span></div><span class="nav-label font-label-sm text-label-sm mt-1 transition-colors">Organize</span></a><a class="group flex flex-col items-center justify-center min-w-[64px] min-h-[48px] py-1 text-on-surface-variant transition-colors" data-path="search" href="#"><div class="pill flex items-center justify-center w-14 h-8 rounded-full transition-colors"><span class="nav-icon material-symbols-outlined text-[22px]">search</span></div><span class="nav-label font-label-sm text-label-sm mt-1 transition-colors">Search</span></a><a class="group flex flex-col items-center justify-center min-w-[64px] min-h-[48px] py-1 text-on-surface-variant transition-colors" data-path="explore" href="#"><div class="pill flex items-center justify-center w-14 h-8 rounded-full transition-colors"><span class="nav-icon material-symbols-outlined text-[22px]">auto_awesome</span></div><span class="nav-label font-label-sm text-label-sm mt-1 transition-colors">Explore</span></a></div></nav></body></html>

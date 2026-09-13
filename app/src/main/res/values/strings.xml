@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">Pandora</string>
+    <string name="timeline">Timeline</string>
+    <string name="organize">Organize</string>
+    <string name="search">Search</string>
+    <string name="explore">Explore</string>
+    <string name="vault">Vault</string>
+    <string name="capture_note">Write Note</string>
+    <string name="capture_camera">Camera</string>
+    <string name="capture_link">Add Link</string>
+    <string name="capture_voice">Voice Memo</string>
+</resources>
