@@ -2,6 +2,7 @@ package com.pandora.app.core.designsystem.component
 
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
@@ -27,15 +28,18 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.pandora.app.core.designsystem.theme.IrisFixed
 import com.pandora.app.core.designsystem.theme.IrisPrimary
+import com.pandora.app.core.designsystem.theme.OutlineHairline
 import com.pandora.app.core.designsystem.theme.PandoraTypography
+import com.pandora.app.core.designsystem.theme.PillShape
 import com.pandora.app.core.designsystem.theme.PorcelainCanvas
+import com.pandora.app.core.designsystem.theme.Spacing
 import com.pandora.app.core.designsystem.theme.TextSecondary
 import com.pandora.app.core.designsystem.theme.TextTertiary
 
@@ -55,11 +59,11 @@ fun PandoraBottomNav(
     Row(
         modifier = modifier
             .fillMaxWidth()
-            .shadow(elevation = 8.dp)
-            .background(PorcelainCanvas.copy(alpha = 0.95f))
+            .background(PorcelainCanvas.copy(alpha = 0.98f))
+            .border(width = 1.dp, color = OutlineHairline)
             .navigationBarsPadding()
-            .height(68.dp)
-            .padding(horizontal = 12.dp),
+            .height(58.dp)
+            .padding(horizontal = Spacing.Small),
         horizontalArrangement = Arrangement.SpaceAround,
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -77,19 +81,19 @@ fun PandoraBottomNav(
             Column(
                 modifier = Modifier
                     .weight(1f)
-                    .clip(RoundedCornerShape(12.dp))
+                    .clip(RoundedCornerShape(8.dp))
                     .clickable(
                         interactionSource = remember { MutableInteractionSource() },
                         indication = null
                     ) { onNavigate(destination) }
-                    .padding(vertical = 4.dp),
+                    .padding(vertical = 2.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center
             ) {
                 Box(
                     modifier = Modifier
-                        .size(width = 56.dp, height = 30.dp)
-                        .clip(RoundedCornerShape(9999.dp))
+                        .size(width = 48.dp, height = 26.dp)
+                        .clip(PillShape)
                         .background(pillColor),
                     contentAlignment = Alignment.Center
                 ) {
@@ -97,13 +101,14 @@ fun PandoraBottomNav(
                         imageVector = destination.icon,
                         contentDescription = destination.label,
                         tint = contentColor,
-                        modifier = Modifier.size(20.dp)
+                        modifier = Modifier.size(18.dp)
                     )
                 }
 
                 Text(
                     text = destination.label,
                     style = PandoraTypography.labelSmall,
+                    fontSize = 11.sp,
                     color = if (isSelected) IrisPrimary else TextSecondary,
                     fontWeight = if (isSelected) FontWeight.SemiBold else FontWeight.Normal,
                     modifier = Modifier.padding(top = 2.dp)

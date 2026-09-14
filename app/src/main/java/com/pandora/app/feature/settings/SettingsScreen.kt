@@ -107,6 +107,14 @@ fun SettingsScreen(
         }
     }
 
+    val restoreLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.OpenDocument()
+    ) { uri ->
+        if (uri != null) {
+            viewModel.restoreBackup(uri)
+        }
+    }
+
     LaunchedEffect(uiState.exportStatusMessage) {
         uiState.exportStatusMessage?.let { msg ->
             Toast.makeText(context, msg, Toast.LENGTH_LONG).show()
@@ -401,35 +409,49 @@ fun SettingsScreen(
                         )
                     }
 
-                    Spacer(modifier = Modifier.height(16.dp))
-
-                    Button(
-                        onClick = {
-                            val timestamp = System.currentTimeMillis()
-                            exportLauncher.launch("pandora_vault_backup_$timestamp.pandora")
-                        },
+                    Row(
                         modifier = Modifier.fillMaxWidth(),
-                        shape = RoundedCornerShape(12.dp),
-                        colors = ButtonDefaults.buttonColors(containerColor = IrisPrimary),
-                        enabled = !uiState.isLoading
+                        horizontalArrangement = Arrangement.spacedBy(10.dp)
                     ) {
-                        if (uiState.isLoading) {
-                            CircularProgressIndicator(
-                                modifier = Modifier.size(18.dp),
-                                color = PorcelainSheetWhite,
-                                strokeWidth = 2.dp
-                            )
-                        } else {
+                        Button(
+                            onClick = {
+                                val timestamp = System.currentTimeMillis()
+                                exportLauncher.launch("pandora_vault_backup_$timestamp.pandora")
+                            },
+                            modifier = Modifier
+                                .weight(1f)
+                                .height(46.dp),
+                            shape = RoundedCornerShape(12.dp),
+                            colors = ButtonDefaults.buttonColors(containerColor = IrisPrimary),
+                            enabled = !uiState.isLoading
+                        ) {
                             Icon(
                                 imageVector = Icons.Default.FolderZip,
                                 contentDescription = null,
                                 tint = PorcelainSheetWhite,
-                                modifier = Modifier.size(18.dp)
+                                modifier = Modifier.size(16.dp)
                             )
-                            Spacer(modifier = Modifier.width(8.dp))
+                            Spacer(modifier = Modifier.width(6.dp))
                             Text(
-                                text = "Export .pandora Archive",
+                                text = "Export",
                                 style = PandoraTypography.labelMedium.copy(color = PorcelainSheetWhite)
+                            )
+                        }
+
+                        OutlinedButton(
+                            onClick = {
+                                restoreLauncher.launch(arrayOf("application/zip", "application/octet-stream", "*/*"))
+                            },
+                            modifier = Modifier
+                                .weight(1f)
+                                .height(46.dp),
+                            shape = RoundedCornerShape(12.dp),
+                            colors = ButtonDefaults.outlinedButtonColors(contentColor = TextPrimary),
+                            enabled = !uiState.isLoading
+                        ) {
+                            Text(
+                                text = "Restore",
+                                style = PandoraTypography.labelMedium
                             )
                         }
                     }

@@ -36,10 +36,14 @@ graph TD
 - **Database & Storage Layer (`core/database`, `core/storage`)**:
   - `PandoraDatabase`: Room Database (v2) with entities: `ItemEntity`, `ItemFtsEntity`, `FolderEntity`, `TagEntity`, `CollectionEntity`, `ItemFolderCrossRef`, `ItemTagCrossRef`, `CollectionItemCrossRef`, `AiConversationEntity`, `AiMessageEntity`.
   - `VaultStorageManager`: Handles atomic writes to `filesDir/vault/`, URI copying, and file deletion.
-- **Security & Portability Layer (`core/security`, `core/export`, `core/ai`)**:
+- **Security, Portability & Ingestion Layer (`core/security`, `core/export`, `core/ai`, `core/util`)**:
   - `KeystoreSecretManager`: EncryptedSharedPreferences with AES-256 SIV/GCM for BYOK keys.
   - `BiometricAuthManager`: BiometricPrompt with strong biometric and device credential fallback.
-  - `PandoraBackupManager`: Packages database schema and vault files into `.pandora` archive with `manifest.json`.
+  - `PatternLockManager`: Custom Compose Canvas 3x3 gesture authenticator with SHA-256 DataStore persistence.
+  - `IncomingShareManager`: Inbound `ACTION_SEND` and `ACTION_SEND_MULTIPLE` intent receiver routing external shares to Compose.
+  - `VoiceRecognitionHelper`: Native Speech-to-Text dictation wrapper for hands-free thought capture.
+  - `DuplicateGuardHelper`: Proactive Room query duplicate detector checking URLs and exact titles before ingestion.
+  - `PandoraBackupManager`: Packages and topologically restores (`Folders` $\rightarrow$ `Tags` $\rightarrow$ `Items` $\rightarrow$ `CrossRefs`) database and vault files into `.pandora` archive with `manifest.json`.
   - `GeminiClient`: Direct REST communication using BYOK key for structured JSON extraction and scoped item chat.
 
 ---
@@ -57,3 +61,4 @@ erDiagram
     ITEMS ||--|| ITEMS_FTS : virtual_index
     AI_CONVERSATIONS ||--o{ AI_MESSAGES : contains
 ```
+

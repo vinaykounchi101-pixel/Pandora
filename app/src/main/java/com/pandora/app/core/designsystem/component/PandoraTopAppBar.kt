@@ -13,7 +13,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.Notifications
@@ -28,12 +27,15 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.pandora.app.core.designsystem.theme.BadgeShape
 import com.pandora.app.core.designsystem.theme.CeruleanDark
+import com.pandora.app.core.designsystem.theme.CeruleanFixed
 import com.pandora.app.core.designsystem.theme.IrisPrimary
 import com.pandora.app.core.designsystem.theme.PandoraTypography
 import com.pandora.app.core.designsystem.theme.PorcelainCanvas
 import com.pandora.app.core.designsystem.theme.PorcelainContainerHigh
 import com.pandora.app.core.designsystem.theme.PorcelainSheetWhite
+import com.pandora.app.core.designsystem.theme.Spacing
 import com.pandora.app.core.designsystem.theme.TextPrimary
 import com.pandora.app.core.designsystem.theme.TextSecondary
 
@@ -52,42 +54,43 @@ fun PandoraTopAppBar(
             .background(PorcelainCanvas)
             .statusBarsPadding()
             .height(56.dp)
-            .padding(horizontal = 20.dp),
+            .padding(horizontal = Spacing.Medium),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(10.dp)
+            horizontalArrangement = Arrangement.spacedBy(Spacing.Small)
         ) {
             Text(
                 text = title,
                 style = PandoraTypography.headlineMedium,
                 color = TextPrimary,
-                fontWeight = FontWeight.Medium
+                fontWeight = FontWeight.Medium,
+                fontSize = 22.sp
             )
 
-            // Vault Indicator Chip
+            // Refined Vault Indicator Badge
             Row(
                 modifier = Modifier
-                    .clip(RoundedCornerShape(9999.dp))
-                    .background(PorcelainContainerHigh)
+                    .clip(BadgeShape)
+                    .background(if (isVaultLocked) PorcelainContainerHigh else CeruleanFixed.copy(alpha = 0.6f))
                     .clickable(onClick = onVaultClick)
-                    .padding(horizontal = 8.dp, vertical = 3.dp),
+                    .padding(horizontal = 6.dp, vertical = 2.dp),
                 verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(4.dp)
+                horizontalArrangement = Arrangement.spacedBy(3.dp)
             ) {
                 Icon(
                     imageVector = Icons.Default.Lock,
                     contentDescription = "Vault Status",
                     tint = CeruleanDark,
-                    modifier = Modifier.size(13.dp)
+                    modifier = Modifier.size(11.dp)
                 )
                 Text(
                     text = if (isVaultLocked) "LOCKED" else "VAULT",
                     style = PandoraTypography.labelSmall,
                     color = CeruleanDark,
-                    fontSize = 10.sp,
+                    fontSize = 9.sp,
                     fontWeight = FontWeight.Bold,
                     letterSpacing = 0.5.sp
                 )
@@ -96,7 +99,7 @@ fun PandoraTopAppBar(
 
         Row(
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(4.dp)
+            horizontalArrangement = Arrangement.spacedBy(Spacing.ExtraSmall)
         ) {
             IconButton(
                 onClick = onNotificationsClick,
@@ -110,11 +113,11 @@ fun PandoraTopAppBar(
                 )
             }
 
-            Spacer(modifier = Modifier.width(2.dp))
+            Spacer(modifier = Modifier.width(Spacing.ExtraSmall))
 
             Box(
                 modifier = Modifier
-                    .size(32.dp)
+                    .size(34.dp)
                     .clip(CircleShape)
                     .background(IrisPrimary)
                     .clickable(onClick = onProfileClick),

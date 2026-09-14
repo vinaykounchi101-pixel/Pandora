@@ -26,6 +26,8 @@ interface ItemRepository {
     suspend fun removeFolder(itemId: Long, folderId: Long)
     suspend fun assignTag(itemId: Long, tagId: Long)
     suspend fun removeTag(itemId: Long, tagId: Long)
+    suspend fun findItemByUrl(url: String): ItemEntity?
+    suspend fun findItemByExactTitle(title: String): ItemEntity?
 }
 
 @Singleton
@@ -104,5 +106,15 @@ class ItemRepositoryImpl @Inject constructor(
 
     override suspend fun removeTag(itemId: Long, tagId: Long) {
         itemDao.removeItemTag(itemId, tagId)
+    }
+
+    override suspend fun findItemByUrl(url: String): ItemEntity? {
+        if (url.isBlank()) return null
+        return itemDao.findItemByUrl(url.trim())
+    }
+
+    override suspend fun findItemByExactTitle(title: String): ItemEntity? {
+        if (title.isBlank()) return null
+        return itemDao.findItemByExactTitle(title.trim())
     }
 }

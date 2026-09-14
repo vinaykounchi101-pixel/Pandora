@@ -25,14 +25,17 @@ class DatabaseSeeder @Inject constructor(
     private val collectionDao: CollectionDao
 ) {
     suspend fun seedInitialDataIfNeeded() = withContext(Dispatchers.IO) {
-        // If folders already exist, skip seeding
-        val existing = folderDao.getAllFolders()
-        // We do a one-time check
+        // If folders or items already exist, skip seeding
+        val existingFoldersCount = folderDao.getFolderCount()
+        val existingItemsCount = itemDao.getItemCountDirect()
+        if (existingFoldersCount > 0 || existingItemsCount > 0) {
+            return@withContext
+        }
+
         val now = System.currentTimeMillis()
         val oneHourAgo = now - 3600 * 1000
         val twoHoursAgo = now - 7200 * 1000
         val yesterday = now - 86400 * 1000
-        val lastWeek = now - 86400 * 1000 * 5
 
         // 1. Seed Folders
         val fDesign = folderDao.insertFolder(FolderEntity(name = "Design Systems & UI", colorToken = "primary"))
@@ -56,13 +59,21 @@ class DatabaseSeeder @Inject constructor(
             CollectionEntity(name = "Product Strategy 2025", description = "Roadmaps, positioning, quarterly OKRs", iconName = "insights", colorToken = "tertiary")
         )
 
+        // Helper for safe tag insertion
+        suspend fun getOrCreateTag(name: String, colorToken: String, isAi: Boolean = false): Long {
+            val existingId = tagDao.getTagIdByName(name)
+            if (existingId != null && existingId > 0) return existingId
+            val insertedId = tagDao.insertTag(TagEntity(name = name, colorToken = colorToken, isAiGenerated = isAi))
+            return if (insertedId > 0) insertedId else (tagDao.getTagIdByName(name) ?: 1L)
+        }
+
         // 3. Seed Tags
-        val tSystems = tagDao.insertTag(TagEntity(name = "systems", colorToken = "primary"))
-        val tArch = tagDao.insertTag(TagEntity(name = "architecture", colorToken = "tertiary"))
-        val tCloud = tagDao.insertTag(TagEntity(name = "cloud", colorToken = "secondary"))
-        val tDesignOps = tagDao.insertTag(TagEntity(name = "designops", colorToken = "primary"))
-        val tHeuristics = tagDao.insertTag(TagEntity(name = "heuristics", colorToken = "primary"))
-        val tMl = tagDao.insertTag(TagEntity(name = "machine-learning", colorToken = "primary", isAiGenerated = true))
+        val tSystems = getOrCreateTag("systems", "primary")
+        val tArch = getOrCreateTag("architecture", "tertiary")
+        val tCloud = getOrCreateTag("cloud", "secondary")
+        val tDesignOps = getOrCreateTag("designops", "primary")
+        val tHeuristics = getOrCreateTag("heuristics", "primary")
+        val tMl = getOrCreateTag("machine-learning", "primary", isAi = true)
 
         // 4. Seed Artifact Items
         // Artifact 1: Diagram (Hero)
@@ -74,9 +85,15 @@ class DatabaseSeeder @Inject constructor(
             createdAt = twoHoursAgo
         )
         val idDiagram = itemDao.insertItem(itemDiagram)
-        itemDao.insertItemFolderCrossRef(ItemFolderCrossRef(itemId = idDiagram, folderId = fTech))
-        itemDao.insertItemTagCrossRef(ItemTagCrossRef(itemId = idDiagram, tagId = tCloud))
-        collectionDao.insertCollectionItemCrossRef(CollectionItemCrossRef(collectionId = cAi, itemId = idDiagram))
+        if (idDiagram > 0 && fTech > 0) {
+            itemDao.insertItemFolderCrossRef(ItemFolderCrossRef(itemId = idDiagram, folderId = fTech))
+        }
+        if (idDiagram > 0 && tCloud > 0) {
+            itemDao.insertItemTagCrossRef(ItemTagCrossRef(itemId = idDiagram, tagId = tCloud))
+        }
+        if (cAi > 0 && idDiagram > 0) {
+            collectionDao.insertCollectionItemCrossRef(CollectionItemCrossRef(collectionId = cAi, itemId = idDiagram))
+        }
 
         // Artifact 2: Web Article (Principles of Resilient System Design)
         val itemArticle = ItemEntity(
@@ -90,10 +107,18 @@ class DatabaseSeeder @Inject constructor(
             createdAt = oneHourAgo
         )
         val idArticle = itemDao.insertItem(itemArticle)
-        itemDao.insertItemFolderCrossRef(ItemFolderCrossRef(itemId = idArticle, folderId = fDistributed))
-        itemDao.insertItemTagCrossRef(ItemTagCrossRef(itemId = idArticle, tagId = tSystems))
-        itemDao.insertItemTagCrossRef(ItemTagCrossRef(itemId = idArticle, tagId = tArch))
-        collectionDao.insertCollectionItemCrossRef(CollectionItemCrossRef(collectionId = cAi, itemId = idArticle))
+        if (idArticle > 0 && fDistributed > 0) {
+            itemDao.insertItemFolderCrossRef(ItemFolderCrossRef(itemId = idArticle, folderId = fDistributed))
+        }
+        if (idArticle > 0 && tSystems > 0) {
+            itemDao.insertItemTagCrossRef(ItemTagCrossRef(itemId = idArticle, tagId = tSystems))
+        }
+        if (idArticle > 0 && tArch > 0) {
+            itemDao.insertItemTagCrossRef(ItemTagCrossRef(itemId = idArticle, tagId = tArch))
+        }
+        if (cAi > 0 && idArticle > 0) {
+            collectionDao.insertCollectionItemCrossRef(CollectionItemCrossRef(collectionId = cAi, itemId = idArticle))
+        }
 
         // Artifact 3: Personal Note Tile
         val itemNote = ItemEntity(
@@ -103,8 +128,12 @@ class DatabaseSeeder @Inject constructor(
             createdAt = oneHourAgo - 1800 * 1000
         )
         val idNote = itemDao.insertItem(itemNote)
-        itemDao.insertItemFolderCrossRef(ItemFolderCrossRef(itemId = idNote, folderId = fDesign))
-        itemDao.insertItemTagCrossRef(ItemTagCrossRef(itemId = idNote, tagId = tDesignOps))
+        if (idNote > 0 && fDesign > 0) {
+            itemDao.insertItemFolderCrossRef(ItemFolderCrossRef(itemId = idNote, folderId = fDesign))
+        }
+        if (idNote > 0 && tDesignOps > 0) {
+            itemDao.insertItemTagCrossRef(ItemTagCrossRef(itemId = idNote, tagId = tDesignOps))
+        }
 
         // Artifact 4: Thought / Quote Reflection (Yesterday)
         val itemThought = ItemEntity(
@@ -115,9 +144,15 @@ class DatabaseSeeder @Inject constructor(
             createdAt = yesterday
         )
         val idThought = itemDao.insertItem(itemThought)
-        itemDao.insertItemFolderCrossRef(ItemFolderCrossRef(itemId = idThought, folderId = fDesign))
-        itemDao.insertItemFolderCrossRef(ItemFolderCrossRef(itemId = idThought, folderId = fBooks))
-        itemDao.insertItemTagCrossRef(ItemTagCrossRef(itemId = idThought, tagId = tDesignOps))
+        if (idThought > 0 && fDesign > 0) {
+            itemDao.insertItemFolderCrossRef(ItemFolderCrossRef(itemId = idThought, folderId = fDesign))
+        }
+        if (idThought > 0 && fBooks > 0) {
+            itemDao.insertItemFolderCrossRef(ItemFolderCrossRef(itemId = idThought, folderId = fBooks))
+        }
+        if (idThought > 0 && tDesignOps > 0) {
+            itemDao.insertItemTagCrossRef(ItemTagCrossRef(itemId = idThought, tagId = tDesignOps))
+        }
 
         // Artifact 5: PDF Tile (Yesterday)
         val itemPdf = ItemEntity(
@@ -128,7 +163,9 @@ class DatabaseSeeder @Inject constructor(
             createdAt = yesterday - 3600 * 1000
         )
         val idPdf = itemDao.insertItem(itemPdf)
-        itemDao.insertItemFolderCrossRef(ItemFolderCrossRef(itemId = idPdf, folderId = fTech))
+        if (idPdf > 0 && fTech > 0) {
+            itemDao.insertItemFolderCrossRef(ItemFolderCrossRef(itemId = idPdf, folderId = fTech))
+        }
 
         // Artifact 6: Voice Memo Tile (Yesterday)
         val itemVoice = ItemEntity(
@@ -139,6 +176,8 @@ class DatabaseSeeder @Inject constructor(
             createdAt = yesterday - 7200 * 1000
         )
         val idVoice = itemDao.insertItem(itemVoice)
-        itemDao.insertItemFolderCrossRef(ItemFolderCrossRef(itemId = idVoice, folderId = fDistributed))
+        if (idVoice > 0 && fDistributed > 0) {
+            itemDao.insertItemFolderCrossRef(ItemFolderCrossRef(itemId = idVoice, folderId = fDistributed))
+        }
     }
 }

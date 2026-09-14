@@ -69,6 +69,9 @@ interface FolderDao {
     @Delete
     suspend fun deleteFolder(folder: FolderEntity)
 
+    @Query("SELECT COUNT(*) FROM folders")
+    suspend fun getFolderCount(): Int
+
     @Transaction
     @Query("SELECT * FROM folders WHERE parentFolderId IS NULL ORDER BY sortOrder ASC, name ASC")
     fun getRootFoldersWithSubfoldersAndItems(): Flow<List<FolderWithSubfoldersAndItems>>
@@ -86,6 +89,12 @@ interface FolderDao {
 interface TagDao {
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insertTag(tag: TagEntity): Long
+
+    @Query("SELECT COUNT(*) FROM tags")
+    suspend fun getTagCount(): Int
+
+    @Query("SELECT id FROM tags WHERE name = :name LIMIT 1")
+    suspend fun getTagIdByName(name: String): Long?
 
     @Query("SELECT * FROM tags ORDER BY name ASC")
     fun getAllTags(): Flow<List<TagEntity>>

@@ -161,4 +161,142 @@ class PandoraBackupManager @Inject constructor(
             totalSizeBytes = vaultSize
         )
     }
+
+    suspend fun restoreFromUri(sourceUri: Uri): Result<BackupStats> = withContext(Dispatchers.IO) {
+        try {
+            val inputStream = context.contentResolver.openInputStream(sourceUri)
+                ?: return@withContext Result.failure(Exception("Cannot open source backup stream"))
+
+            var manifestJson: JSONObject? = null
+            val tempVaultFiles = mutableListOf<Pair<String, ByteArray>>()
+
+            java.util.zip.ZipInputStream(java.io.BufferedInputStream(inputStream)).use { zipIn ->
+                var entry = zipIn.nextEntry
+                while (entry != null) {
+                    if (entry.name == "manifest.json") {
+                        val content = zipIn.bufferedReader(Charsets.UTF_8).readText()
+                        manifestJson = JSONObject(content)
+                    } else if (entry.name.startsWith("vault/")) {
+                        val fileName = entry.name.removePrefix("vault/")
+                        val bytes = zipIn.readBytes()
+                        tempVaultFiles.add(fileName to bytes)
+                    }
+                    zipIn.closeEntry()
+                    entry = zipIn.nextEntry
+                }
+            }
+
+            if (manifestJson == null) {
+                return@withContext Result.failure(Exception("Invalid backup archive: missing manifest.json"))
+            }
+
+            val manifest = manifestJson!!
+
+            // 1. Restore Folders (FK independent)
+            val foldersArray = manifest.optJSONArray("folders") ?: JSONArray()
+            for (i in 0 until foldersArray.length()) {
+                val obj = foldersArray.getJSONObject(i)
+                val id = obj.getLong("id")
+                val name = obj.getString("name")
+                val parentId = if (obj.isNull("parentFolderId")) null else obj.getLong("parentFolderId")
+                val color = obj.optString("colorToken", "default")
+                folderDao.insertFolder(com.pandora.app.core.database.entity.FolderEntity(
+                    id = id,
+                    name = name,
+                    parentFolderId = parentId,
+                    colorToken = color
+                ))
+            }
+
+            // 2. Restore Tags (FK independent)
+            val tagsArray = manifest.optJSONArray("tags") ?: JSONArray()
+            val tagIdMap = mutableMapOf<String, Long>()
+            for (i in 0 until tagsArray.length()) {
+                val obj = tagsArray.getJSONObject(i)
+                val name = obj.getString("name")
+                val color = obj.optString("colorToken", "slate")
+                val tagId = tagDao.insertTag(com.pandora.app.core.database.entity.TagEntity(
+                    name = name,
+                    colorToken = color
+                ))
+                tagIdMap[name] = tagId
+            }
+
+            // 3. Restore Items & Cross-references
+            val itemsArray = manifest.optJSONArray("items") ?: JSONArray()
+            for (i in 0 until itemsArray.length()) {
+                val obj = itemsArray.getJSONObject(i)
+                val id = obj.getLong("id")
+                val title = obj.getString("title")
+                val itemTypeStr = obj.optString("itemType", "NOTE")
+                val itemType = try {
+                    com.pandora.app.core.database.entity.ItemType.valueOf(itemTypeStr)
+                } catch (_: Exception) {
+                    com.pandora.app.core.database.entity.ItemType.NOTE
+                }
+                val sourceUrl = if (obj.isNull("sourceUrl")) null else obj.getString("sourceUrl")
+                val excerpt = obj.optString("excerpt", "")
+                val fullContent = obj.optString("fullContent", "")
+                val localFilePath = if (obj.isNull("localFilePath")) null else obj.getString("localFilePath")
+                val readingTime = obj.optInt("readingTimeMinutes", 1)
+                val isFavorite = obj.optBoolean("isFavorite", false)
+                val createdAt = obj.optLong("createdAt", System.currentTimeMillis())
+
+                val savedItemId = itemDao.insertItem(com.pandora.app.core.database.entity.ItemEntity(
+                    id = id,
+                    itemType = itemType,
+                    title = title,
+                    sourceUrl = sourceUrl,
+                    excerpt = excerpt,
+                    fullContent = fullContent,
+                    localFilePath = localFilePath,
+                    readingTimeMinutes = readingTime,
+                    isFavorite = isFavorite,
+                    createdAt = createdAt
+                ))
+
+                // Restore Folder cross refs
+                val itemFolders = obj.optJSONArray("folders") ?: JSONArray()
+                for (f in 0 until itemFolders.length()) {
+                    val folderId = itemFolders.getLong(f)
+                    itemDao.insertItemFolderCrossRef(com.pandora.app.core.database.entity.ItemFolderCrossRef(
+                        itemId = savedItemId,
+                        folderId = folderId
+                    ))
+                }
+
+                // Restore Tag cross refs
+                val itemTags = obj.optJSONArray("tags") ?: JSONArray()
+                for (t in 0 until itemTags.length()) {
+                    val tagName = itemTags.getString(t)
+                    val tagId = tagIdMap[tagName] ?: tagDao.getTagIdByName(tagName)
+                    if (tagId != null && tagId > 0) {
+                        itemDao.insertItemTagCrossRef(com.pandora.app.core.database.entity.ItemTagCrossRef(
+                            itemId = savedItemId,
+                            tagId = tagId
+                        ))
+                    }
+                }
+            }
+
+            // 4. Restore Vault files to disk
+            val vaultDir = vaultStorageManager.vaultDirectory
+            if (!vaultDir.exists()) vaultDir.mkdirs()
+            tempVaultFiles.forEach { (name, bytes) ->
+                val destFile = File(vaultDir, name)
+                destFile.writeBytes(bytes)
+            }
+
+            Result.success(
+                BackupStats(
+                    itemCount = itemsArray.length(),
+                    folderCount = foldersArray.length(),
+                    tagCount = tagsArray.length(),
+                    totalSizeBytes = tempVaultFiles.sumOf { it.second.size.toLong() }
+                )
+            )
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
 }

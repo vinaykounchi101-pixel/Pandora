@@ -98,6 +98,32 @@ The project shall set device-specific values during implementation; the followin
 ## 8. Delivery order
 
 **Release 1 — free local core:** capture/import, timeline, detail screens, folders/tags/multi-folder membership, collections, local keyword search, deletion safeguards, backup/export, and replace restore.
+**Release 2 — AI enhancements:** link preview, Gemini BYOK client integration, AI organization proposal review sheet, and grounded collection conversations.
+
+---
+
+## 9. New §9.7 — Ingestion, Security & Integrity Requirements
+
+### 9.7.1 Inbound Android Share Sheet Receiver
+- The application shall declare an `intent-filter` in `AndroidManifest.xml` targeting `android.intent.action.SEND` and `android.intent.action.SEND_MULTIPLE` supporting MIME types `text/plain`, `text/x-vcard`, and `image/*`.
+- On launch from a share intent, `MainActivity` shall extract `Intent.EXTRA_TEXT`, `Intent.EXTRA_SUBJECT`, or `Intent.EXTRA_STREAM` URIs, pre-populate the capture pipeline, and route directly to the quick capture sheet without blocking app startup.
+
+### 9.7.2 Speech-to-Text Voice Dictation
+- The quick note capture interface shall provide a microphone trigger invoking Android's `SpeechRecognizer` with `RecognizerIntent.ACTION_RECOGNIZE_SPEECH` and `EXTRA_PARTIAL_RESULTS`.
+- Transcribed speech segments shall be appended reactively to the note body with graceful offline fallback and explicit error handling.
+
+### 9.7.3 Proactive Ingestion Duplicate Guard
+- Prior to committing an incoming URL or exact note title, the app shall query the local Room database (`ItemDao.findItemByUrl` / `ItemDao.findItemByExactTitle`).
+- If an existing record is detected, a non-blocking informational banner shall be presented (`DuplicateGuardState.DuplicateFound(existingItem)`) displaying the previous capture date while allowing the user to proceed or view the existing record.
+
+### 9.7.4 Topological Foreign-Key Safe Backup & Restorer
+- The `.pandora` archive generator shall serialize tables in deterministic foreign-key dependency order:
+  `Folders` $\rightarrow$ `Tags` $\rightarrow$ `Items` $\rightarrow$ `ItemFolderCrossRef` $\rightarrow$ `ItemTagCrossRef` $\rightarrow$ `Collections` $\rightarrow$ `CollectionItemCrossRef`.
+- The restoration engine shall stage and validate archive checksums, clear staging upon failure, and execute database inserts in the exact topological order inside a single Room transaction to eliminate SQLite FK constraint violations.
+
+### 9.7.5 Interactive 3x3 Canvas Pattern Lock
+- The access security subsystem shall provide an optional 3x3 node gesture Pattern Lock rendered via Jetpack Compose `Canvas`.
+- The pattern sequence shall be hashed using `SHA-256` with a per-device salt and persisted securely in Preferences DataStore.
 
 **Release 1.1 — local refinement:** on-device OCR if selected, access lock, scalable indexing, and duplicate detection with keep/delete resolution.
 

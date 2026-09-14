@@ -15,7 +15,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AutoAwesome
-import androidx.compose.material.icons.filled.ChevronRight
 import androidx.compose.material.icons.filled.Description
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Folder
@@ -28,7 +27,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -36,6 +34,7 @@ import androidx.compose.ui.unit.sp
 import com.pandora.app.core.database.dao.ItemWithRelations
 import com.pandora.app.core.designsystem.theme.ApricotContainer
 import com.pandora.app.core.designsystem.theme.ApricotFixed
+import com.pandora.app.core.designsystem.theme.BadgeShape
 import com.pandora.app.core.designsystem.theme.CardShape
 import com.pandora.app.core.designsystem.theme.CeruleanFixed
 import com.pandora.app.core.designsystem.theme.CeruleanTertiary
@@ -47,9 +46,9 @@ import com.pandora.app.core.designsystem.theme.OnIrisFixed
 import com.pandora.app.core.designsystem.theme.OutlineHairline
 import com.pandora.app.core.designsystem.theme.PandoraTypography
 import com.pandora.app.core.designsystem.theme.PorcelainContainer
-import com.pandora.app.core.designsystem.theme.PorcelainContainerLow
 import com.pandora.app.core.designsystem.theme.PorcelainSheetWhite
 import com.pandora.app.core.designsystem.theme.QuoteItalicStyle
+import com.pandora.app.core.designsystem.theme.Spacing
 import com.pandora.app.core.designsystem.theme.TextPrimary
 import com.pandora.app.core.designsystem.theme.TextSecondary
 import com.pandora.app.core.designsystem.theme.TextTertiary
@@ -69,7 +68,7 @@ fun ArticleTile(
             .background(PorcelainSheetWhite)
             .border(1.dp, OutlineHairline, CardShape)
             .clickable(onClick = onClick)
-            .padding(14.dp),
+            .padding(Spacing.Medium),
         verticalArrangement = Arrangement.SpaceBetween
     ) {
         Column {
@@ -80,7 +79,7 @@ fun ArticleTile(
             ) {
                 Row(
                     modifier = Modifier
-                        .clip(RoundedCornerShape(9999.dp))
+                        .clip(BadgeShape)
                         .background(IrisFixed)
                         .padding(horizontal = 6.dp, vertical = 2.dp),
                     verticalAlignment = Alignment.CenterVertically,
@@ -98,34 +97,35 @@ fun ArticleTile(
                     imageVector = Icons.Default.AutoAwesome,
                     contentDescription = "AI Summary",
                     tint = IrisPrimary,
-                    modifier = Modifier.size(14.dp)
+                    modifier = Modifier.size(13.dp)
                 )
             }
 
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(Spacing.Small))
 
             Text(
                 text = item.title,
                 style = PandoraTypography.headlineMedium,
-                fontSize = 16.sp,
-                lineHeight = 22.sp,
+                fontSize = 15.sp,
+                lineHeight = 21.sp,
                 color = TextPrimary,
                 maxLines = 3,
                 overflow = TextOverflow.Ellipsis
             )
 
-            Spacer(modifier = Modifier.height(6.dp))
+            Spacer(modifier = Modifier.height(Spacing.ExtraSmall))
 
             Text(
                 text = item.excerpt,
                 style = PandoraTypography.bodySmall,
                 color = TextSecondary,
                 maxLines = 2,
-                overflow = TextOverflow.Ellipsis
+                overflow = TextOverflow.Ellipsis,
+                lineHeight = 16.sp
             )
         }
 
-        Column(modifier = Modifier.padding(top = 10.dp)) {
+        Column(modifier = Modifier.padding(top = Spacing.Small)) {
             Text(
                 text = item.domain ?: "distributedsystems.io",
                 style = PandoraTypography.labelSmall,
@@ -151,7 +151,7 @@ fun NoteTile(
             .background(PorcelainSheetWhite)
             .border(1.dp, OutlineHairline, CardShape)
             .clickable(onClick = onClick)
-            .padding(14.dp),
+            .padding(Spacing.Medium),
         verticalArrangement = Arrangement.SpaceBetween
     ) {
         Column {
@@ -162,7 +162,7 @@ fun NoteTile(
             ) {
                 Row(
                     modifier = Modifier
-                        .clip(RoundedCornerShape(9999.dp))
+                        .clip(BadgeShape)
                         .background(ApricotFixed)
                         .padding(horizontal = 6.dp, vertical = 2.dp),
                     verticalAlignment = Alignment.CenterVertically,
@@ -190,7 +190,7 @@ fun NoteTile(
                 )
             }
 
-            Spacer(modifier = Modifier.height(10.dp))
+            Spacer(modifier = Modifier.height(Spacing.Small))
 
             Text(
                 text = item.fullContent.ifBlank { item.excerpt },
@@ -204,9 +204,9 @@ fun NoteTile(
         }
 
         Row(
-            modifier = Modifier.padding(top = 10.dp),
+            modifier = Modifier.padding(top = Spacing.Small),
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(4.dp)
+            horizontalArrangement = Arrangement.spacedBy(3.dp)
         ) {
             Icon(
                 imageVector = Icons.Default.Folder,
@@ -239,7 +239,7 @@ fun PdfTile(
             .background(PorcelainSheetWhite)
             .border(1.dp, OutlineHairline, CardShape)
             .clickable(onClick = onClick)
-            .padding(14.dp),
+            .padding(Spacing.Medium),
         verticalArrangement = Arrangement.SpaceBetween
     ) {
         Column {
@@ -250,8 +250,8 @@ fun PdfTile(
             ) {
                 Box(
                     modifier = Modifier
-                        .size(34.dp)
-                        .clip(RoundedCornerShape(8.dp))
+                        .size(32.dp)
+                        .clip(BadgeShape)
                         .background(CeruleanFixed),
                     contentAlignment = Alignment.Center
                 ) {
@@ -259,7 +259,7 @@ fun PdfTile(
                         imageVector = Icons.Default.Description,
                         contentDescription = null,
                         tint = OnCeruleanFixed,
-                        modifier = Modifier.size(18.dp)
+                        modifier = Modifier.size(16.dp)
                     )
                 }
 
@@ -270,13 +270,13 @@ fun PdfTile(
                     fontWeight = FontWeight.Bold,
                     fontSize = 9.sp,
                     modifier = Modifier
-                        .clip(RoundedCornerShape(4.dp))
+                        .clip(BadgeShape)
                         .background(CeruleanFixed)
                         .padding(horizontal = 5.dp, vertical = 2.dp)
                 )
             }
 
-            Spacer(modifier = Modifier.height(10.dp))
+            Spacer(modifier = Modifier.height(Spacing.Small))
 
             Text(
                 text = item.title,
@@ -288,7 +288,7 @@ fun PdfTile(
                 overflow = TextOverflow.Ellipsis
             )
 
-            Spacer(modifier = Modifier.height(4.dp))
+            Spacer(modifier = Modifier.height(Spacing.ExtraSmall))
 
             Text(
                 text = "2.4 MB • Encrypted",
@@ -299,7 +299,7 @@ fun PdfTile(
         }
 
         Row(
-            modifier = Modifier.padding(top = 10.dp),
+            modifier = Modifier.padding(top = Spacing.Small),
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
@@ -327,7 +327,7 @@ fun VoiceMemoTile(
             .background(PorcelainSheetWhite)
             .border(1.dp, OutlineHairline, CardShape)
             .clickable(onClick = onClick)
-            .padding(14.dp),
+            .padding(Spacing.Medium),
         verticalArrangement = Arrangement.SpaceBetween
     ) {
         Column {
@@ -338,8 +338,8 @@ fun VoiceMemoTile(
             ) {
                 Box(
                     modifier = Modifier
-                        .size(34.dp)
-                        .clip(RoundedCornerShape(8.dp))
+                        .size(32.dp)
+                        .clip(BadgeShape)
                         .background(ApricotFixed),
                     contentAlignment = Alignment.Center
                 ) {
@@ -347,7 +347,7 @@ fun VoiceMemoTile(
                         imageVector = Icons.Default.Mic,
                         contentDescription = null,
                         tint = OnApricotFixed,
-                        modifier = Modifier.size(18.dp)
+                        modifier = Modifier.size(16.dp)
                     )
                 }
 
@@ -356,15 +356,15 @@ fun VoiceMemoTile(
                     style = PandoraTypography.labelSmall,
                     color = OnApricotFixed,
                     fontWeight = FontWeight.Bold,
-                    fontSize = 10.sp,
+                    fontSize = 9.sp,
                     modifier = Modifier
-                        .clip(RoundedCornerShape(4.dp))
+                        .clip(BadgeShape)
                         .background(ApricotFixed)
                         .padding(horizontal = 5.dp, vertical = 2.dp)
                 )
             }
 
-            Spacer(modifier = Modifier.height(10.dp))
+            Spacer(modifier = Modifier.height(Spacing.Small))
 
             Text(
                 text = item.title,
@@ -376,7 +376,7 @@ fun VoiceMemoTile(
                 overflow = TextOverflow.Ellipsis
             )
 
-            Spacer(modifier = Modifier.height(4.dp))
+            Spacer(modifier = Modifier.height(Spacing.ExtraSmall))
 
             Text(
                 text = "Audio transcript ready",
@@ -387,7 +387,7 @@ fun VoiceMemoTile(
         }
 
         Row(
-            modifier = Modifier.padding(top = 10.dp),
+            modifier = Modifier.padding(top = Spacing.Small),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(3.dp)
         ) {

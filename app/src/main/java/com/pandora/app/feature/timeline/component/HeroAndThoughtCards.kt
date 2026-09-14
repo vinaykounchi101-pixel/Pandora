@@ -27,12 +27,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.pandora.app.core.database.dao.ItemWithRelations
 import com.pandora.app.core.designsystem.theme.ApricotFixed
+import com.pandora.app.core.designsystem.theme.BadgeShape
+import com.pandora.app.core.designsystem.theme.ButtonShape
 import com.pandora.app.core.designsystem.theme.CardShape
 import com.pandora.app.core.designsystem.theme.DarkCapsuleSurface
 import com.pandora.app.core.designsystem.theme.InverseOnSurface
@@ -45,6 +46,8 @@ import com.pandora.app.core.designsystem.theme.PorcelainContainerHigh
 import com.pandora.app.core.designsystem.theme.PorcelainContainerLow
 import com.pandora.app.core.designsystem.theme.PorcelainSheetWhite
 import com.pandora.app.core.designsystem.theme.QuoteItalicStyle
+import com.pandora.app.core.designsystem.theme.Spacing
+import com.pandora.app.core.designsystem.theme.TagChipShape
 import com.pandora.app.core.designsystem.theme.TextPrimary
 import com.pandora.app.core.designsystem.theme.TextSecondary
 import com.pandora.app.core.designsystem.theme.TextTertiary
@@ -67,7 +70,7 @@ fun HeroDiagramCard(
             .background(PorcelainSheetWhite)
             .border(1.dp, OutlineHairline, CardShape)
             .clickable(onClick = onClick)
-            .padding(16.dp)
+            .padding(Spacing.Medium)
     ) {
         // Top Meta Row
         Row(
@@ -77,12 +80,12 @@ fun HeroDiagramCard(
         ) {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
+                horizontalArrangement = Arrangement.spacedBy(Spacing.Small)
             ) {
                 Box(
                     modifier = Modifier
-                        .size(26.dp)
-                        .clip(RoundedCornerShape(6.dp))
+                        .size(24.dp)
+                        .clip(BadgeShape)
                         .background(ApricotFixed),
                     contentAlignment = Alignment.Center
                 ) {
@@ -90,7 +93,7 @@ fun HeroDiagramCard(
                         imageVector = Icons.Default.Screenshot,
                         contentDescription = null,
                         tint = OnApricotFixedVariant,
-                        modifier = Modifier.size(16.dp)
+                        modifier = Modifier.size(14.dp)
                     )
                 }
                 Text(
@@ -102,31 +105,34 @@ fun HeroDiagramCard(
             Text(
                 text = "11:42 AM",
                 style = PandoraTypography.bodySmall,
-                color = TextTertiary
+                color = TextTertiary,
+                fontSize = 11.sp
             )
         }
 
-        Spacer(modifier = Modifier.height(10.dp))
+        Spacer(modifier = Modifier.height(Spacing.Small))
 
         // Title
         Text(
             text = item.title,
             style = PandoraTypography.headlineSmall,
             color = TextPrimary,
-            fontWeight = FontWeight.SemiBold
+            fontWeight = FontWeight.SemiBold,
+            fontSize = 17.sp,
+            lineHeight = 23.sp
         )
 
-        Spacer(modifier = Modifier.height(12.dp))
+        Spacer(modifier = Modifier.height(Spacing.MediumSmall))
 
         // Embedded Diagram Canvas Mock
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(140.dp)
-                .clip(RoundedCornerShape(12.dp))
+                .height(130.dp)
+                .clip(RoundedCornerShape(10.dp))
                 .background(PorcelainContainer)
-                .border(1.dp, OutlineHairline, RoundedCornerShape(12.dp))
-                .padding(12.dp)
+                .border(1.dp, OutlineHairline, RoundedCornerShape(10.dp))
+                .padding(Spacing.MediumSmall)
         ) {
             Column(
                 modifier = Modifier.align(Alignment.Center),
@@ -136,11 +142,12 @@ fun HeroDiagramCard(
                     text = "Pandora - Chronological Timeline Architecture",
                     style = PandoraTypography.labelMedium,
                     color = TextSecondary,
-                    fontWeight = FontWeight.Bold
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 12.sp
                 )
-                Spacer(modifier = Modifier.height(6.dp))
+                Spacer(modifier = Modifier.height(Spacing.ExtraSmall))
                 Text(
-                    text = "[ API Gateway ] ➔ [ Ingestion Service ] ➔ [ Event Bus ] ➔ [ Vault ]",
+                    text = "[ Ingestion ] ➔ [ SQLite + FTS5 ] ➔ [ Private Vault ]",
                     style = PandoraTypography.bodySmall,
                     color = IrisPrimary,
                     fontSize = 11.sp
@@ -151,8 +158,8 @@ fun HeroDiagramCard(
             Row(
                 modifier = Modifier
                     .align(Alignment.BottomEnd)
-                    .clip(RoundedCornerShape(6.dp))
-                    .background(DarkCapsuleSurface.copy(alpha = 0.85f))
+                    .clip(BadgeShape)
+                    .background(DarkCapsuleSurface.copy(alpha = 0.9f))
                     .clickable(onClick = onInspectClick)
                     .padding(horizontal = 8.dp, vertical = 4.dp),
                 verticalAlignment = Alignment.CenterVertically,
@@ -162,7 +169,7 @@ fun HeroDiagramCard(
                     imageVector = Icons.Default.ZoomIn,
                     contentDescription = "Inspect",
                     tint = InverseOnSurface,
-                    modifier = Modifier.size(13.dp)
+                    modifier = Modifier.size(12.dp)
                 )
                 Text(
                     text = "Inspect Diagram",
@@ -173,7 +180,7 @@ fun HeroDiagramCard(
             }
         }
 
-        Spacer(modifier = Modifier.height(12.dp))
+        Spacer(modifier = Modifier.height(Spacing.MediumSmall))
 
         // Bottom Tags & Folders Row
         Row(
@@ -183,27 +190,28 @@ fun HeroDiagramCard(
         ) {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(6.dp)
+                horizontalArrangement = Arrangement.spacedBy(Spacing.ExtraSmall)
             ) {
                 itemWithRelations.folders.firstOrNull()?.let { folder ->
                     Row(
                         modifier = Modifier
-                            .clip(RoundedCornerShape(9999.dp))
+                            .clip(TagChipShape)
                             .background(PorcelainContainerHigh)
                             .padding(horizontal = 8.dp, vertical = 3.dp),
                         verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(4.dp)
+                        horizontalArrangement = Arrangement.spacedBy(3.dp)
                     ) {
                         Icon(
                             imageVector = Icons.Default.Folder,
                             contentDescription = null,
                             tint = IrisPrimary,
-                            modifier = Modifier.size(13.dp)
+                            modifier = Modifier.size(12.dp)
                         )
                         Text(
                             text = folder.name,
                             style = PandoraTypography.labelSmall,
-                            color = IrisPrimary
+                            color = IrisPrimary,
+                            fontSize = 10.sp
                         )
                     }
                 }
@@ -212,8 +220,9 @@ fun HeroDiagramCard(
                         text = "#${tag.name}",
                         style = PandoraTypography.labelSmall,
                         color = TextSecondary,
+                        fontSize = 10.sp,
                         modifier = Modifier
-                            .clip(RoundedCornerShape(6.dp))
+                            .clip(BadgeShape)
                             .background(PorcelainContainer)
                             .padding(horizontal = 6.dp, vertical = 3.dp)
                     )
@@ -222,7 +231,7 @@ fun HeroDiagramCard(
 
             Box(
                 modifier = Modifier
-                    .size(32.dp)
+                    .size(30.dp)
                     .clip(CircleShape)
                     .background(if (item.isFavorite) ApricotFixed else PorcelainContainerHigh)
                     .clickable(onClick = onBookmarkClick),
@@ -232,7 +241,7 @@ fun HeroDiagramCard(
                     imageVector = if (item.isFavorite) Icons.Default.Bookmark else Icons.Default.BookmarkBorder,
                     contentDescription = "Bookmark",
                     tint = if (item.isFavorite) OnApricotFixedVariant else TextSecondary,
-                    modifier = Modifier.size(16.dp)
+                    modifier = Modifier.size(15.dp)
                 )
             }
         }
@@ -255,7 +264,7 @@ fun FullWidthThoughtCard(
             .background(PorcelainSheetWhite)
             .border(1.dp, OutlineHairline, CardShape)
             .clickable(onClick = onClick)
-            .padding(16.dp)
+            .padding(Spacing.Medium)
     ) {
         Row(
             modifier = Modifier.fillMaxWidth(),
@@ -265,56 +274,61 @@ fun FullWidthThoughtCard(
             Text(
                 text = item.title,
                 style = PandoraTypography.headlineSmall,
-                color = TextPrimary
+                color = TextPrimary,
+                fontSize = 17.sp
             )
             Text(
                 text = "5:18 PM",
                 style = PandoraTypography.bodySmall,
-                color = TextTertiary
+                color = TextTertiary,
+                fontSize = 11.sp
             )
         }
 
-        Spacer(modifier = Modifier.height(10.dp))
+        Spacer(modifier = Modifier.height(Spacing.Small))
 
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .clip(RoundedCornerShape(12.dp))
+                .clip(RoundedCornerShape(10.dp))
                 .background(PorcelainContainerLow)
-                .padding(14.dp)
+                .padding(Spacing.MediumSmall)
         ) {
             Text(
                 text = item.excerpt.ifBlank { item.fullContent },
                 style = QuoteItalicStyle,
-                color = TextPrimary
+                color = TextPrimary,
+                fontSize = 14.sp,
+                lineHeight = 22.sp
             )
         }
 
-        Spacer(modifier = Modifier.height(12.dp))
+        Spacer(modifier = Modifier.height(Spacing.MediumSmall))
 
         Row(
-            horizontalArrangement = Arrangement.spacedBy(6.dp),
+            horizontalArrangement = Arrangement.spacedBy(Spacing.ExtraSmall),
             verticalAlignment = Alignment.CenterVertically
         ) {
             itemWithRelations.folders.forEach { folder ->
                 Row(
                     modifier = Modifier
-                        .clip(RoundedCornerShape(9999.dp))
+                        .clip(TagChipShape)
                         .background(PorcelainContainer)
-                        .padding(horizontal = 8.dp, vertical = 3.dp),
+                        .padding(horizontal = 7.dp, vertical = 3.dp),
                     verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(4.dp)
+                    horizontalArrangement = Arrangement.spacedBy(3.dp)
                 ) {
                     Icon(
                         imageVector = Icons.Default.Folder,
                         contentDescription = null,
                         tint = TextSecondary,
-                        modifier = Modifier.size(12.dp)
+                        modifier = Modifier.size(11.dp)
                     )
                     Text(
                         text = folder.name,
                         style = PandoraTypography.labelSmall,
-                        color = TextSecondary
+                        color = TextSecondary,
+                        fontSize = 10.sp
                     )
                 }
             }

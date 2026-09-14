@@ -9,10 +9,14 @@ val PandoraShapes = Shapes(
     small = RoundedCornerShape(8.dp),
     medium = RoundedCornerShape(12.dp),
     large = RoundedCornerShape(16.dp),
-    extraLarge = RoundedCornerShape(24.dp)
+    extraLarge = RoundedCornerShape(20.dp)
 )
 
-val CardShape = RoundedCornerShape(20.dp)
+val BadgeShape = RoundedCornerShape(6.dp)
+val TagChipShape = RoundedCornerShape(8.dp)
+val ButtonShape = RoundedCornerShape(10.dp)
+val SegmentedPillShape = RoundedCornerShape(12.dp)
+val CardShape = RoundedCornerShape(16.dp)
+val ContainerLargeShape = RoundedCornerShape(20.dp)
 val PillShape = RoundedCornerShape(9999.dp)
-val CapsuleShape = RoundedCornerShape(28.dp)
-val BottomSheetTopShape = RoundedCornerShape(topStart = 28.dp, topEnd = 28.dp)
+val BottomSheetTopShape = RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp)

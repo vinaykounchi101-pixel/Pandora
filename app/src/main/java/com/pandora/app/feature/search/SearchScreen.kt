@@ -3,7 +3,6 @@ package com.pandora.app.feature.search
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
@@ -22,7 +21,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
@@ -40,7 +38,6 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -53,7 +50,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.SolidColor
@@ -68,6 +64,9 @@ import com.pandora.app.core.database.entity.ItemType
 import com.pandora.app.core.designsystem.component.FilterPillChip
 import com.pandora.app.core.designsystem.component.TaxonomyTagChip
 import com.pandora.app.core.designsystem.theme.ApricotOrange
+import com.pandora.app.core.designsystem.theme.BadgeShape
+import com.pandora.app.core.designsystem.theme.ButtonShape
+import com.pandora.app.core.designsystem.theme.CardShape
 import com.pandora.app.core.designsystem.theme.CeruleanTertiary
 import com.pandora.app.core.designsystem.theme.IrisPrimary
 import com.pandora.app.core.designsystem.theme.PandoraTypography
@@ -75,6 +74,8 @@ import com.pandora.app.core.designsystem.theme.PorcelainCanvas
 import com.pandora.app.core.designsystem.theme.PorcelainContainerHigh
 import com.pandora.app.core.designsystem.theme.PorcelainContainerLow
 import com.pandora.app.core.designsystem.theme.PorcelainSheetWhite
+import com.pandora.app.core.designsystem.theme.Spacing
+import com.pandora.app.core.designsystem.theme.TagChipShape
 import com.pandora.app.core.designsystem.theme.TextPrimary
 import com.pandora.app.core.designsystem.theme.TextSecondary
 import com.pandora.app.core.designsystem.theme.TextTertiary
@@ -99,7 +100,10 @@ fun SearchScreen(
             TopAppBar(
                 colors = TopAppBarDefaults.topAppBarColors(containerColor = PorcelainCanvas),
                 navigationIcon = {
-                    IconButton(onClick = onNavigateBack) {
+                    IconButton(
+                        onClick = onNavigateBack,
+                        modifier = Modifier.size(48.dp)
+                    ) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                             contentDescription = "Back",
@@ -111,25 +115,25 @@ fun SearchScreen(
                     Surface(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .height(44.dp)
-                            .padding(end = 12.dp),
-                        shape = RoundedCornerShape(22.dp),
+                            .height(40.dp)
+                            .padding(end = Spacing.Small),
+                        shape = ButtonShape,
                         color = PorcelainContainerHigh,
                         tonalElevation = 0.dp
                     ) {
                         Row(
                             modifier = Modifier
                                 .fillMaxSize()
-                                .padding(horizontal = 12.dp),
+                                .padding(horizontal = Spacing.MediumSmall),
                             verticalAlignment = Alignment.CenterVertically
                         ) {
                             Icon(
                                 imageVector = Icons.Default.Search,
                                 contentDescription = null,
                                 tint = TextTertiary,
-                                modifier = Modifier.size(18.dp)
+                                modifier = Modifier.size(16.dp)
                             )
-                            Spacer(modifier = Modifier.width(8.dp))
+                            Spacer(modifier = Modifier.width(Spacing.Small))
                             BasicTextField(
                                 value = uiState.query,
                                 onValueChange = { viewModel.onQueryChanged(it) },
@@ -139,7 +143,7 @@ fun SearchScreen(
                                 singleLine = true,
                                 textStyle = PandoraTypography.bodyMedium.copy(
                                     color = TextPrimary,
-                                    fontSize = 14.sp
+                                    fontSize = 13.sp
                                 ),
                                 cursorBrush = SolidColor(IrisPrimary),
                                 keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
@@ -149,7 +153,7 @@ fun SearchScreen(
                                             text = "Search titles, notes, full text...",
                                             style = PandoraTypography.bodyMedium.copy(
                                                 color = TextTertiary,
-                                                fontSize = 14.sp
+                                                fontSize = 13.sp
                                             )
                                         )
                                     }
@@ -163,13 +167,13 @@ fun SearchScreen(
                             ) {
                                 IconButton(
                                     onClick = { viewModel.clearSearch() },
-                                    modifier = Modifier.size(24.dp)
+                                    modifier = Modifier.size(22.dp)
                                 ) {
                                     Icon(
                                         imageVector = Icons.Default.Clear,
                                         contentDescription = "Clear",
                                         tint = TextSecondary,
-                                        modifier = Modifier.size(16.dp)
+                                        modifier = Modifier.size(14.dp)
                                     )
                                 }
                             }
@@ -189,8 +193,8 @@ fun SearchScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .horizontalScroll(rememberScrollState())
-                    .padding(horizontal = 16.dp, vertical = 8.dp),
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    .padding(horizontal = Spacing.Medium, vertical = Spacing.ExtraSmall),
+                horizontalArrangement = Arrangement.spacedBy(Spacing.Small)
             ) {
                 FilterPillChip(
                     label = "All Items",
@@ -228,7 +232,7 @@ fun SearchScreen(
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 20.dp, vertical = 6.dp),
+                    .padding(horizontal = Spacing.Medium, vertical = Spacing.Small),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
@@ -236,14 +240,16 @@ fun SearchScreen(
                     text = if (uiState.query.isNotBlank()) "RESULTS FOR \"${uiState.query.uppercase()}\"" else "VAULT KNOWLEDGE",
                     style = PandoraTypography.labelSmall.copy(
                         color = TextSecondary,
-                        letterSpacing = 1.sp,
-                        fontWeight = FontWeight.Bold
+                        letterSpacing = 0.5.sp,
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 10.sp
                     )
                 )
                 Text(
                     text = "${uiState.searchResults.size} items",
                     style = PandoraTypography.labelSmall.copy(
-                        color = TextTertiary
+                        color = TextTertiary,
+                        fontSize = 10.sp
                     )
                 )
             }
@@ -253,7 +259,7 @@ fun SearchScreen(
                 Box(
                     modifier = Modifier
                         .fillMaxSize()
-                        .padding(32.dp),
+                        .padding(Spacing.Huge),
                     contentAlignment = Alignment.Center
                 ) {
                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
@@ -261,17 +267,17 @@ fun SearchScreen(
                             imageVector = Icons.Default.Search,
                             contentDescription = null,
                             tint = TextTertiary.copy(alpha = 0.5f),
-                            modifier = Modifier.size(48.dp)
+                            modifier = Modifier.size(44.dp)
                         )
-                        Spacer(modifier = Modifier.height(12.dp))
+                        Spacer(modifier = Modifier.height(Spacing.MediumSmall))
                         Text(
                             text = "No matching items found",
                             style = PandoraTypography.headlineMedium.copy(
                                 color = TextPrimary,
-                                fontSize = 18.sp
+                                fontSize = 17.sp
                             )
                         )
-                        Spacer(modifier = Modifier.height(4.dp))
+                        Spacer(modifier = Modifier.height(Spacing.ExtraSmall))
                         Text(
                             text = "Try adjusting your search keywords or active filters.",
                             style = PandoraTypography.bodySmall.copy(
@@ -283,8 +289,8 @@ fun SearchScreen(
             } else {
                 LazyColumn(
                     modifier = Modifier.fillMaxSize(),
-                    contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
-                    verticalArrangement = Arrangement.spacedBy(10.dp)
+                    contentPadding = PaddingValues(horizontal = Spacing.Medium, vertical = Spacing.Small),
+                    verticalArrangement = Arrangement.spacedBy(Spacing.Small)
                 ) {
                     items(uiState.searchResults, key = { it.item.id }) { itemWithRelations ->
                         SearchResultCard(
@@ -293,7 +299,7 @@ fun SearchScreen(
                         )
                     }
                     item {
-                        Spacer(modifier = Modifier.height(40.dp))
+                        Spacer(modifier = Modifier.height(Spacing.Huge))
                     }
                 }
             }
@@ -319,23 +325,23 @@ fun SearchResultCard(
         modifier = Modifier
             .fillMaxWidth()
             .clickable { onClick() },
-        shape = RoundedCornerShape(16.dp),
+        shape = CardShape,
         colors = CardDefaults.cardColors(containerColor = PorcelainSheetWhite),
         elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)
     ) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(16.dp)
+                .padding(Spacing.Medium)
         ) {
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Surface(
-                    shape = CircleShape,
+                    shape = BadgeShape,
                     color = PorcelainContainerHigh,
-                    modifier = Modifier.size(28.dp)
+                    modifier = Modifier.size(26.dp)
                 ) {
                     Box(contentAlignment = Alignment.Center) {
                         Icon(
@@ -346,19 +352,19 @@ fun SearchResultCard(
                         )
                     }
                 }
-                Spacer(modifier = Modifier.width(8.dp))
+                Spacer(modifier = Modifier.width(Spacing.Small))
                 Text(
                     text = item.itemType.name,
                     style = PandoraTypography.labelSmall.copy(
                         color = TextSecondary,
                         fontWeight = FontWeight.Bold,
-                        letterSpacing = 0.5.sp
+                        fontSize = 10.sp
                     )
                 )
                 if (item.readingTimeMinutes > 0) {
                     Text(
                         text = " • ${item.readingTimeMinutes} min read",
-                        style = PandoraTypography.labelSmall.copy(color = TextTertiary)
+                        style = PandoraTypography.labelSmall.copy(color = TextTertiary, fontSize = 10.sp)
                     )
                 }
                 Spacer(modifier = Modifier.weight(1f))
@@ -372,27 +378,27 @@ fun SearchResultCard(
                 }
             }
 
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(Spacing.Small))
 
             Text(
                 text = item.title,
                 style = PandoraTypography.headlineSmall.copy(
                     fontWeight = FontWeight.SemiBold,
                     color = TextPrimary,
-                    fontSize = 16.sp,
-                    lineHeight = 22.sp
+                    fontSize = 15.sp,
+                    lineHeight = 21.sp
                 ),
                 maxLines = 2,
                 overflow = TextOverflow.Ellipsis
             )
 
             if (item.excerpt.isNotBlank()) {
-                Spacer(modifier = Modifier.height(4.dp))
+                Spacer(modifier = Modifier.height(Spacing.ExtraSmall))
                 Text(
                     text = item.excerpt,
                     style = PandoraTypography.bodySmall.copy(
                         color = TextSecondary,
-                        lineHeight = 18.sp
+                        lineHeight = 17.sp
                     ),
                     maxLines = 2,
                     overflow = TextOverflow.Ellipsis
@@ -401,15 +407,15 @@ fun SearchResultCard(
 
             // Tags & Folder Badges
             if (itemWithRelations.folders.isNotEmpty() || itemWithRelations.tags.isNotEmpty()) {
-                Spacer(modifier = Modifier.height(10.dp))
+                Spacer(modifier = Modifier.height(Spacing.Small))
                 Row(
                     modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(6.dp),
+                    horizontalArrangement = Arrangement.spacedBy(Spacing.ExtraSmall),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     itemWithRelations.folders.firstOrNull()?.let { folder ->
                         Surface(
-                            shape = RoundedCornerShape(6.dp),
+                            shape = BadgeShape,
                             color = CeruleanTertiary.copy(alpha = 0.12f)
                         ) {
                             Row(
@@ -420,7 +426,7 @@ fun SearchResultCard(
                                     imageVector = Icons.Default.Folder,
                                     contentDescription = null,
                                     tint = CeruleanTertiary,
-                                    modifier = Modifier.size(11.dp)
+                                    modifier = Modifier.size(10.dp)
                                 )
                                 Spacer(modifier = Modifier.width(3.dp))
                                 Text(

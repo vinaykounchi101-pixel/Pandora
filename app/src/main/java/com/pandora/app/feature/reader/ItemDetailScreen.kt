@@ -17,12 +17,11 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.AutoAwesome
 import androidx.compose.material.icons.filled.ChevronRight
 import androidx.compose.material.icons.filled.CloudDone
@@ -46,16 +45,16 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.pandora.app.core.designsystem.theme.ApricotFixed
 import com.pandora.app.core.designsystem.theme.ApricotOrange
+import com.pandora.app.core.designsystem.theme.BadgeShape
+import com.pandora.app.core.designsystem.theme.ButtonShape
 import com.pandora.app.core.designsystem.theme.CardShape
 import com.pandora.app.core.designsystem.theme.CeruleanDark
 import com.pandora.app.core.designsystem.theme.CeruleanFixed
-import com.pandora.app.core.designsystem.theme.CeruleanTertiary
 import com.pandora.app.core.designsystem.theme.DarkCapsuleSurface
 import com.pandora.app.core.designsystem.theme.IrisFixed
 import com.pandora.app.core.designsystem.theme.IrisPrimary
@@ -68,6 +67,8 @@ import com.pandora.app.core.designsystem.theme.PorcelainContainerHigh
 import com.pandora.app.core.designsystem.theme.PorcelainContainerHighest
 import com.pandora.app.core.designsystem.theme.PorcelainContainerLow
 import com.pandora.app.core.designsystem.theme.PorcelainSheetWhite
+import com.pandora.app.core.designsystem.theme.Spacing
+import com.pandora.app.core.designsystem.theme.TagChipShape
 import com.pandora.app.core.designsystem.theme.TextPrimary
 import com.pandora.app.core.designsystem.theme.TextSecondary
 import com.pandora.app.core.designsystem.theme.TextTertiary
@@ -81,6 +82,7 @@ fun ItemDetailScreen(
 ) {
     val state by viewModel.uiState.collectAsState()
     val itemWithRelations = state.itemWithRelations
+    val context = androidx.compose.ui.platform.LocalContext.current
 
     Column(
         modifier = modifier
@@ -94,30 +96,36 @@ fun ItemDetailScreen(
                 .background(PorcelainCanvas)
                 .statusBarsPadding()
                 .height(56.dp)
-                .padding(horizontal = 12.dp),
+                .padding(horizontal = Spacing.Small),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
+                horizontalArrangement = Arrangement.spacedBy(Spacing.ExtraSmall)
             ) {
-                IconButton(onClick = onBackClick) {
+                IconButton(
+                    onClick = onBackClick,
+                    modifier = Modifier.size(48.dp)
+                ) {
                     Icon(
-                        imageVector = Icons.Default.ArrowBack,
+                        imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                         contentDescription = "Back",
                         tint = TextPrimary
                     )
                 }
                 Text(
-                    text = "Note Detail",
+                    text = "Artifact Reader",
                     style = PandoraTypography.headlineMedium,
-                    fontSize = 20.sp,
+                    fontSize = 19.sp,
                     color = TextPrimary
                 )
             }
 
-            IconButton(onClick = { }) {
+            IconButton(
+                onClick = { },
+                modifier = Modifier.size(48.dp)
+            ) {
                 Icon(
                     imageVector = Icons.Default.MoreVert,
                     contentDescription = "More",
@@ -138,8 +146,8 @@ fun ItemDetailScreen(
 
             LazyColumn(
                 modifier = Modifier.fillMaxSize(),
-                contentPadding = PaddingValues(horizontal = 20.dp, vertical = 10.dp),
-                verticalArrangement = Arrangement.spacedBy(16.dp)
+                contentPadding = PaddingValues(horizontal = Spacing.Medium, vertical = Spacing.Small),
+                verticalArrangement = Arrangement.spacedBy(Spacing.Medium)
             ) {
                 // Meta Badges & Action Bar
                 item {
@@ -150,21 +158,21 @@ fun ItemDetailScreen(
                     ) {
                         Row(
                             verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.spacedBy(6.dp)
+                            horizontalArrangement = Arrangement.spacedBy(Spacing.ExtraSmall)
                         ) {
                             Row(
                                 modifier = Modifier
-                                    .clip(RoundedCornerShape(9999.dp))
+                                    .clip(BadgeShape)
                                     .background(CeruleanFixed)
-                                    .padding(horizontal = 10.dp, vertical = 4.dp),
+                                    .padding(horizontal = 8.dp, vertical = 3.dp),
                                 verticalAlignment = Alignment.CenterVertically,
-                                horizontalArrangement = Arrangement.spacedBy(4.dp)
+                                horizontalArrangement = Arrangement.spacedBy(3.dp)
                             ) {
                                 Icon(
                                     imageVector = Icons.Default.Language,
                                     contentDescription = null,
                                     tint = OnCeruleanFixed,
-                                    modifier = Modifier.size(13.dp)
+                                    modifier = Modifier.size(12.dp)
                                 )
                                 Text(
                                     text = "Web Article",
@@ -176,20 +184,20 @@ fun ItemDetailScreen(
 
                             Row(
                                 modifier = Modifier
-                                    .clip(RoundedCornerShape(9999.dp))
+                                    .clip(BadgeShape)
                                     .background(PorcelainContainer)
-                                    .padding(horizontal = 8.dp, vertical = 4.dp),
+                                    .padding(horizontal = 8.dp, vertical = 3.dp),
                                 verticalAlignment = Alignment.CenterVertically,
-                                horizontalArrangement = Arrangement.spacedBy(4.dp)
+                                horizontalArrangement = Arrangement.spacedBy(3.dp)
                             ) {
                                 Icon(
                                     imageVector = Icons.Default.CloudDone,
                                     contentDescription = null,
                                     tint = CeruleanDark,
-                                    modifier = Modifier.size(12.dp)
+                                    modifier = Modifier.size(11.dp)
                                 )
                                 Text(
-                                    text = "Offline Cached · App-Private",
+                                    text = "Offline Vault",
                                     style = PandoraTypography.labelSmall,
                                     color = TextSecondary,
                                     fontSize = 10.sp
@@ -199,7 +207,7 @@ fun ItemDetailScreen(
 
                         Row(
                             verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.spacedBy(4.dp)
+                            horizontalArrangement = Arrangement.spacedBy(Spacing.ExtraSmall)
                         ) {
                             IconButton(
                                 onClick = { viewModel.toggleFavorite() },
@@ -212,11 +220,22 @@ fun ItemDetailScreen(
                                     imageVector = if (state.isFavorite) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
                                     contentDescription = "Favorite",
                                     tint = if (state.isFavorite) ApricotOrange else TextSecondary,
-                                    modifier = Modifier.size(18.dp)
+                                    modifier = Modifier.size(17.dp)
                                 )
                             }
                             IconButton(
-                                onClick = { },
+                                onClick = {
+                                    val sendIntent = android.content.Intent().apply {
+                                        action = android.content.Intent.ACTION_SEND
+                                        putExtra(
+                                            android.content.Intent.EXTRA_TEXT,
+                                            "${item.title}\n\n${item.sourceUrl ?: item.fullContent.ifBlank { item.excerpt }}"
+                                        )
+                                        type = "text/plain"
+                                    }
+                                    val shareIntent = android.content.Intent.createChooser(sendIntent, "Share Memory")
+                                    context.startActivity(shareIntent)
+                                },
                                 modifier = Modifier
                                     .size(36.dp)
                                     .clip(CircleShape)
@@ -226,7 +245,7 @@ fun ItemDetailScreen(
                                     imageVector = Icons.Default.Share,
                                     contentDescription = "Share",
                                     tint = TextSecondary,
-                                    modifier = Modifier.size(18.dp)
+                                    modifier = Modifier.size(17.dp)
                                 )
                             }
                         }
@@ -235,20 +254,22 @@ fun ItemDetailScreen(
 
                 // Editorial Headline
                 item {
-                    Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
+                    Column(verticalArrangement = Arrangement.spacedBy(Spacing.ExtraSmall)) {
                         Text(
                             text = item.title,
                             style = PandoraTypography.headlineLarge,
                             color = TextPrimary,
-                            fontWeight = FontWeight.Medium
+                            fontWeight = FontWeight.Medium,
+                            fontSize = 24.sp,
+                            lineHeight = 32.sp
                         )
 
                         Row(
                             verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.spacedBy(6.dp)
+                            horizontalArrangement = Arrangement.spacedBy(Spacing.ExtraSmall)
                         ) {
                             Text(
-                                text = "saved from ${item.domain ?: "distributedsystems.io"}",
+                                text = "from ${item.domain ?: "distributedsystems.io"}",
                                 style = PandoraTypography.bodySmall,
                                 color = TextPrimary,
                                 fontWeight = FontWeight.Medium
@@ -258,13 +279,13 @@ fun ItemDetailScreen(
                             Text(text = "•", color = TextTertiary)
                             Row(
                                 verticalAlignment = Alignment.CenterVertically,
-                                horizontalArrangement = Arrangement.spacedBy(3.dp)
+                                horizontalArrangement = Arrangement.spacedBy(2.dp)
                             ) {
                                 Icon(
                                     imageVector = Icons.Default.Schedule,
                                     contentDescription = null,
                                     tint = TextTertiary,
-                                    modifier = Modifier.size(12.dp)
+                                    modifier = Modifier.size(11.dp)
                                 )
                                 Text(
                                     text = "${item.readingTimeMinutes.coerceAtLeast(6)} min read",
@@ -281,20 +302,21 @@ fun ItemDetailScreen(
                     Box(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .height(150.dp)
+                            .height(135.dp)
                             .shadow(1.dp, CardShape)
                             .clip(CardShape)
                             .background(PorcelainContainer)
                             .border(1.dp, OutlineHairline, CardShape)
-                            .padding(16.dp)
+                            .padding(Spacing.Medium)
                     ) {
                         Column(modifier = Modifier.align(Alignment.Center)) {
                             Text(
                                 text = "Minimalist Architectural Schema",
                                 style = PandoraTypography.headlineSmall,
-                                fontSize = 16.sp,
+                                fontSize = 15.sp,
                                 color = TextPrimary
                             )
+                            Spacer(modifier = Modifier.height(Spacing.ExtraSmall))
                             Text(
                                 text = "Distributed mesh network topologies & resilient microservices",
                                 style = PandoraTypography.bodySmall,
@@ -305,12 +327,12 @@ fun ItemDetailScreen(
                         Row(
                             modifier = Modifier
                                 .align(Alignment.BottomEnd)
-                                .clip(RoundedCornerShape(6.dp))
-                                .background(DarkCapsuleSurface.copy(alpha = 0.85f))
+                                .clip(BadgeShape)
+                                .background(DarkCapsuleSurface.copy(alpha = 0.9f))
                                 .clickable { }
                                 .padding(horizontal = 8.dp, vertical = 4.dp),
                             verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.spacedBy(4.dp)
+                            horizontalArrangement = Arrangement.spacedBy(3.dp)
                         ) {
                             Text(
                                 text = "Inspect Source",
@@ -322,13 +344,13 @@ fun ItemDetailScreen(
                                 imageVector = Icons.Default.OpenInNew,
                                 contentDescription = null,
                                 tint = PorcelainSheetWhite,
-                                modifier = Modifier.size(12.dp)
+                                modifier = Modifier.size(11.dp)
                             )
                         }
                     }
                 }
 
-                // Tactile Organization Hub (Folders + Tags)
+                // Organization Hub (Folders + Tags)
                 item {
                     Column(
                         modifier = Modifier
@@ -337,46 +359,35 @@ fun ItemDetailScreen(
                             .clip(CardShape)
                             .background(PorcelainSheetWhite)
                             .border(1.dp, OutlineHairline, CardShape)
-                            .padding(16.dp),
-                        verticalArrangement = Arrangement.spacedBy(12.dp)
+                            .padding(Spacing.Medium),
+                        verticalArrangement = Arrangement.spacedBy(Spacing.MediumSmall)
                     ) {
                         // Folders Row
-                        Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
-                            Row(
-                                modifier = Modifier.fillMaxWidth(),
-                                horizontalArrangement = Arrangement.SpaceBetween,
-                                verticalAlignment = Alignment.CenterVertically
-                            ) {
-                                Text(
-                                    text = "FOLDERS (${itemWithRelations.folders.size.coerceAtLeast(2)})",
-                                    style = PandoraTypography.labelSmall,
-                                    color = TextSecondary,
-                                    letterSpacing = 0.5.sp
-                                )
-                                Text(
-                                    text = "Organized in Personal Vault",
-                                    style = PandoraTypography.labelSmall,
-                                    color = IrisPrimary
-                                )
-                            }
+                        Column(verticalArrangement = Arrangement.spacedBy(Spacing.ExtraSmall)) {
+                            Text(
+                                text = "FOLDERS",
+                                style = PandoraTypography.labelSmall,
+                                color = TextSecondary,
+                                letterSpacing = 0.5.sp
+                            )
 
                             Row(
-                                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                                horizontalArrangement = Arrangement.spacedBy(Spacing.Small),
                                 verticalAlignment = Alignment.CenterVertically
                             ) {
                                 Row(
                                     modifier = Modifier
-                                        .clip(RoundedCornerShape(10.dp))
+                                        .clip(TagChipShape)
                                         .background(PorcelainContainerHigh)
-                                        .padding(horizontal = 10.dp, vertical = 6.dp),
+                                        .padding(horizontal = 8.dp, vertical = 5.dp),
                                     verticalAlignment = Alignment.CenterVertically,
-                                    horizontalArrangement = Arrangement.spacedBy(5.dp)
+                                    horizontalArrangement = Arrangement.spacedBy(4.dp)
                                 ) {
                                     Icon(
                                         imageVector = Icons.Default.FolderOpen,
                                         contentDescription = null,
                                         tint = IrisPrimary,
-                                        modifier = Modifier.size(15.dp)
+                                        modifier = Modifier.size(14.dp)
                                     )
                                     Text(
                                         text = "Tech Architecture",
@@ -387,18 +398,18 @@ fun ItemDetailScreen(
 
                                 Row(
                                     modifier = Modifier
-                                        .clip(RoundedCornerShape(10.dp))
+                                        .clip(TagChipShape)
                                         .background(PorcelainContainerLow)
                                         .clickable { }
-                                        .padding(horizontal = 10.dp, vertical = 6.dp),
+                                        .padding(horizontal = 8.dp, vertical = 5.dp),
                                     verticalAlignment = Alignment.CenterVertically,
-                                    horizontalArrangement = Arrangement.spacedBy(4.dp)
+                                    horizontalArrangement = Arrangement.spacedBy(3.dp)
                                 ) {
                                     Icon(
                                         imageVector = Icons.Default.Add,
                                         contentDescription = null,
                                         tint = IrisPrimary,
-                                        modifier = Modifier.size(14.dp)
+                                        modifier = Modifier.size(13.dp)
                                     )
                                     Text(
                                         text = "Add to Folder",
@@ -410,7 +421,7 @@ fun ItemDetailScreen(
                         }
 
                         // Tags Row
-                        Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
+                        Column(verticalArrangement = Arrangement.spacedBy(Spacing.ExtraSmall)) {
                             Text(
                                 text = "SEMANTIC TAGS",
                                 style = PandoraTypography.labelSmall,
@@ -418,7 +429,7 @@ fun ItemDetailScreen(
                                 letterSpacing = 0.5.sp
                             )
                             Row(
-                                horizontalArrangement = Arrangement.spacedBy(6.dp),
+                                horizontalArrangement = Arrangement.spacedBy(Spacing.ExtraSmall),
                                 verticalAlignment = Alignment.CenterVertically
                             ) {
                                 Text(
@@ -426,27 +437,27 @@ fun ItemDetailScreen(
                                     style = PandoraTypography.labelSmall,
                                     color = TextPrimary,
                                     modifier = Modifier
-                                        .clip(RoundedCornerShape(9999.dp))
+                                        .clip(TagChipShape)
                                         .background(IrisFixed)
-                                        .padding(horizontal = 8.dp, vertical = 4.dp)
+                                        .padding(horizontal = 8.dp, vertical = 3.dp)
                                 )
                                 Text(
                                     text = "#reliability",
                                     style = PandoraTypography.labelSmall,
                                     color = TextPrimary,
                                     modifier = Modifier
-                                        .clip(RoundedCornerShape(9999.dp))
+                                        .clip(TagChipShape)
                                         .background(ApricotFixed)
-                                        .padding(horizontal = 8.dp, vertical = 4.dp)
+                                        .padding(horizontal = 8.dp, vertical = 3.dp)
                                 )
                                 Text(
                                     text = "#cloud",
                                     style = PandoraTypography.labelSmall,
                                     color = TextPrimary,
                                     modifier = Modifier
-                                        .clip(RoundedCornerShape(9999.dp))
+                                        .clip(TagChipShape)
                                         .background(CeruleanFixed)
-                                        .padding(horizontal = 8.dp, vertical = 4.dp)
+                                        .padding(horizontal = 8.dp, vertical = 3.dp)
                                 )
                             }
                         }
@@ -462,8 +473,8 @@ fun ItemDetailScreen(
                             .clip(CardShape)
                             .background(PorcelainContainerLow)
                             .border(1.dp, OutlineHairline, CardShape)
-                            .padding(16.dp),
-                        verticalArrangement = Arrangement.spacedBy(10.dp)
+                            .padding(Spacing.Medium),
+                        verticalArrangement = Arrangement.spacedBy(Spacing.Small)
                     ) {
                         Row(
                             modifier = Modifier.fillMaxWidth(),
@@ -472,11 +483,11 @@ fun ItemDetailScreen(
                         ) {
                             Row(
                                 verticalAlignment = Alignment.CenterVertically,
-                                horizontalArrangement = Arrangement.spacedBy(6.dp)
+                                horizontalArrangement = Arrangement.spacedBy(Spacing.ExtraSmall)
                             ) {
                                 Box(
                                     modifier = Modifier
-                                        .size(width = 3.dp, height = 16.dp)
+                                        .size(width = 3.dp, height = 15.dp)
                                         .clip(RoundedCornerShape(2.dp))
                                         .background(IrisPrimary)
                                 )
@@ -484,15 +495,16 @@ fun ItemDetailScreen(
                                     text = "Key Highlights",
                                     style = PandoraTypography.headlineSmall,
                                     color = TextPrimary,
-                                    fontWeight = FontWeight.Bold
+                                    fontWeight = FontWeight.Bold,
+                                    fontSize = 16.sp
                                 )
                             }
                             Text(
-                                text = "3 Parsed",
+                                text = "3 Highlights",
                                 style = PandoraTypography.labelSmall,
                                 color = TextSecondary,
                                 modifier = Modifier
-                                    .clip(RoundedCornerShape(4.dp))
+                                    .clip(BadgeShape)
                                     .background(PorcelainContainerHighest)
                                     .padding(horizontal = 6.dp, vertical = 2.dp)
                             )
@@ -525,16 +537,16 @@ fun ItemDetailScreen(
                             .clip(CardShape)
                             .background(PorcelainContainerHigh)
                             .border(1.dp, OutlineHairline, CardShape)
-                            .padding(16.dp),
-                        verticalArrangement = Arrangement.spacedBy(10.dp)
+                            .padding(Spacing.Medium),
+                        verticalArrangement = Arrangement.spacedBy(Spacing.Small)
                     ) {
                         Row(
                             verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.spacedBy(8.dp)
+                            horizontalArrangement = Arrangement.spacedBy(Spacing.Small)
                         ) {
                             Box(
                                 modifier = Modifier
-                                    .size(36.dp)
+                                    .size(34.dp)
                                     .clip(CircleShape)
                                     .background(IrisPrimary),
                                 contentAlignment = Alignment.Center
@@ -543,7 +555,7 @@ fun ItemDetailScreen(
                                     imageVector = Icons.Default.AutoAwesome,
                                     contentDescription = null,
                                     tint = PorcelainSheetWhite,
-                                    modifier = Modifier.size(18.dp)
+                                    modifier = Modifier.size(17.dp)
                                 )
                             }
 
@@ -551,7 +563,7 @@ fun ItemDetailScreen(
                                 Text(
                                     text = "Ask AI about this article",
                                     style = PandoraTypography.headlineSmall,
-                                    fontSize = 16.sp,
+                                    fontSize = 15.sp,
                                     color = TextPrimary
                                 )
                                 Text(
@@ -563,26 +575,26 @@ fun ItemDetailScreen(
                         }
 
                         Row(
-                            horizontalArrangement = Arrangement.spacedBy(8.dp),
+                            horizontalArrangement = Arrangement.spacedBy(Spacing.Small),
                             verticalAlignment = Alignment.CenterVertically
                         ) {
                             Row(
                                 modifier = Modifier
-                                    .clip(RoundedCornerShape(9999.dp))
+                                    .clip(ButtonShape)
                                     .background(IrisPrimary)
                                     .clickable { }
-                                    .padding(horizontal = 14.dp, vertical = 8.dp),
+                                    .padding(horizontal = 12.dp, vertical = 7.dp),
                                 verticalAlignment = Alignment.CenterVertically,
-                                horizontalArrangement = Arrangement.spacedBy(6.dp)
+                                horizontalArrangement = Arrangement.spacedBy(4.dp)
                             ) {
                                 Icon(
                                     imageVector = Icons.Default.AutoAwesome,
                                     contentDescription = null,
                                     tint = PorcelainSheetWhite,
-                                    modifier = Modifier.size(14.dp)
+                                    modifier = Modifier.size(13.dp)
                                 )
                                 Text(
-                                    text = "Start fresh chat",
+                                    text = "Start chat",
                                     style = PandoraTypography.labelMedium,
                                     color = PorcelainSheetWhite,
                                     fontWeight = FontWeight.Bold
@@ -591,10 +603,10 @@ fun ItemDetailScreen(
 
                             Box(
                                 modifier = Modifier
-                                    .clip(RoundedCornerShape(9999.dp))
+                                    .clip(ButtonShape)
                                     .background(PorcelainContainer)
                                     .clickable { }
-                                    .padding(horizontal = 12.dp, vertical = 8.dp)
+                                    .padding(horizontal = 10.dp, vertical = 7.dp)
                             ) {
                                 Text(
                                     text = "Generate 3 Flashcards",
@@ -608,7 +620,7 @@ fun ItemDetailScreen(
 
                 // Related Items in Library
                 item {
-                    Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
+                    Column(verticalArrangement = Arrangement.spacedBy(Spacing.Small)) {
                         Row(
                             modifier = Modifier.fillMaxWidth(),
                             horizontalArrangement = Arrangement.SpaceBetween,
@@ -618,10 +630,11 @@ fun ItemDetailScreen(
                                 text = "Related Items in Library",
                                 style = PandoraTypography.headlineSmall,
                                 color = TextPrimary,
-                                fontWeight = FontWeight.Bold
+                                fontWeight = FontWeight.Bold,
+                                fontSize = 16.sp
                             )
                             Text(
-                                text = "2 Linked Artifacts",
+                                text = "${state.relatedItems.size} Linked Artifacts",
                                 style = PandoraTypography.labelSmall,
                                 color = IrisPrimary
                             )
@@ -636,19 +649,19 @@ fun ItemDetailScreen(
                                     .background(PorcelainSheetWhite)
                                     .border(1.dp, OutlineHairline, CardShape)
                                     .clickable { onRelatedItemClick(related.item.id) }
-                                    .padding(12.dp),
+                                    .padding(Spacing.Small),
                                 verticalAlignment = Alignment.CenterVertically,
                                 horizontalArrangement = Arrangement.SpaceBetween
                             ) {
                                 Row(
                                     verticalAlignment = Alignment.CenterVertically,
-                                    horizontalArrangement = Arrangement.spacedBy(10.dp),
+                                    horizontalArrangement = Arrangement.spacedBy(Spacing.Small),
                                     modifier = Modifier.weight(1f)
                                 ) {
                                     Box(
                                         modifier = Modifier
-                                            .size(46.dp)
-                                            .clip(RoundedCornerShape(10.dp))
+                                            .size(42.dp)
+                                            .clip(BadgeShape)
                                             .background(PorcelainContainer),
                                         contentAlignment = Alignment.Center
                                     ) {
@@ -656,7 +669,7 @@ fun ItemDetailScreen(
                                             imageVector = Icons.Default.FolderSpecial,
                                             contentDescription = null,
                                             tint = IrisPrimary,
-                                            modifier = Modifier.size(22.dp)
+                                            modifier = Modifier.size(20.dp)
                                         )
                                     }
 
@@ -664,7 +677,7 @@ fun ItemDetailScreen(
                                         Text(
                                             text = related.item.title,
                                             style = PandoraTypography.headlineSmall,
-                                            fontSize = 15.sp,
+                                            fontSize = 14.sp,
                                             color = TextPrimary
                                         )
                                         Text(
@@ -680,7 +693,7 @@ fun ItemDetailScreen(
                                     imageVector = Icons.Default.ChevronRight,
                                     contentDescription = null,
                                     tint = TextTertiary,
-                                    modifier = Modifier.size(20.dp)
+                                    modifier = Modifier.size(18.dp)
                                 )
                             }
                         }
@@ -701,10 +714,10 @@ fun HighlightNumberItem(
     Row(
         modifier = modifier
             .fillMaxWidth()
-            .clip(RoundedCornerShape(10.dp))
+            .clip(ButtonShape)
             .background(PorcelainSheetWhite)
-            .padding(12.dp),
-        horizontalArrangement = Arrangement.spacedBy(10.dp),
+            .padding(Spacing.MediumSmall),
+        horizontalArrangement = Arrangement.spacedBy(Spacing.Small),
         verticalAlignment = Alignment.Top
     ) {
         Text(
@@ -712,7 +725,7 @@ fun HighlightNumberItem(
             style = PandoraTypography.headlineMedium,
             color = IrisPrimary,
             fontWeight = FontWeight.Bold,
-            fontSize = 18.sp
+            fontSize = 16.sp
         )
         Column {
             Text(

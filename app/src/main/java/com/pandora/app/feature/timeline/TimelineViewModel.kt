@@ -40,7 +40,11 @@ data class TimelineUiState(
 @HiltViewModel
 class TimelineViewModel @Inject constructor(
     private val itemRepository: ItemRepository,
-    private val databaseSeeder: DatabaseSeeder
+    private val databaseSeeder: DatabaseSeeder,
+    val incomingShareManager: com.pandora.app.core.util.IncomingShareManager,
+    val voiceHelper: com.pandora.app.core.util.VoiceRecognitionHelper,
+    val duplicateGuardHelper: com.pandora.app.core.util.DuplicateGuardHelper,
+    val vaultStorageManager: com.pandora.app.core.storage.VaultStorageManager
 ) : ViewModel() {
 
     private val _activeFilter = MutableStateFlow(TimelineFilter.ALL)
@@ -100,6 +104,50 @@ class TimelineViewModel @Inject constructor(
 
     fun setSearchQuery(query: String) {
         _searchQuery.value = query
+    }
+
+    fun quickSaveNote(title: String, content: String) {
+        viewModelScope.launch {
+            val item = com.pandora.app.core.database.entity.ItemEntity(
+                itemType = ItemType.NOTE,
+                title = title,
+                excerpt = content.take(120),
+                fullContent = content,
+                createdAt = System.currentTimeMillis()
+            )
+            itemRepository.saveItem(item)
+        }
+    }
+
+    fun quickSaveLink(url: String, title: String) {
+        viewModelScope.launch {
+            val item = com.pandora.app.core.database.entity.ItemEntity(
+                itemType = ItemType.ARTICLE,
+                title = title,
+                sourceUrl = url,
+                excerpt = url,
+                fullContent = "Saved web link from browser: $url",
+                createdAt = System.currentTimeMillis()
+            )
+            itemRepository.saveItem(item)
+        }
+    }
+
+    fun quickSaveMedia(uri: android.net.Uri, title: String = "Photo Capture") {
+        viewModelScope.launch {
+            val saved = vaultStorageManager.copyUriToVault(uri)
+            val item = com.pandora.app.core.database.entity.ItemEntity(
+                itemType = ItemType.IMAGE,
+                title = title.ifBlank { "Media Capture" },
+                localFilePath = saved?.first,
+                fileSizeBytes = saved?.second ?: 0L,
+                excerpt = "Captured photo / screenshot saved to vault",
+                fullContent = "Media asset securely stored in offline vault.",
+                capturedFromApp = "Device Media / Camera",
+                createdAt = System.currentTimeMillis()
+            )
+            itemRepository.saveItem(item)
+        }
     }
 
     fun toggleFavorite(item: ItemWithRelations) {

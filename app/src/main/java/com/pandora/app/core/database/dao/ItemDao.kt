@@ -75,6 +75,9 @@ interface ItemDao {
     @Query("SELECT COUNT(*) FROM items")
     fun getTotalItemCount(): Flow<Int>
 
+    @Query("SELECT COUNT(*) FROM items")
+    suspend fun getItemCountDirect(): Int
+
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insertItemFolderCrossRef(crossRef: ItemFolderCrossRef)
 
@@ -105,4 +108,10 @@ interface ItemDao {
         ORDER BY items.createdAt DESC
     """)
     fun searchItemsFts(query: String): Flow<List<ItemWithRelations>>
+
+    @Query("SELECT * FROM items WHERE sourceUrl = :url LIMIT 1")
+    suspend fun findItemByUrl(url: String): ItemEntity?
+
+    @Query("SELECT * FROM items WHERE LOWER(TRIM(title)) = LOWER(TRIM(:title)) LIMIT 1")
+    suspend fun findItemByExactTitle(title: String): ItemEntity?
 }

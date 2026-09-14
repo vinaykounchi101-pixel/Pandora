@@ -96,10 +96,12 @@ Users organize items through:
 
 Users can bring useful content into Pandora from the places they encounter it on Android. Version 1.0 supports these capture entry points:
 
-- Sharing supported content to Pandora from another Android app.
-- Pasting a copied link or text from the clipboard into Pandora.
-- Adding an image, link, note, or document manually from within Pandora.
-- Saving a screenshot through Pandora’s available Android capture flow.
+- **Inbound Android Share Sheet:** Sharing links, text selections, and images directly into Pandora via `ACTION_SEND` and `ACTION_SEND_MULTIPLE` from any third-party app (Chrome, Twitter/X, Reddit, Docs).
+- **Speech-to-Text Voice Dictation:** Hands-free voice note transcription directly inside the Quick Note dialog using native Android `SpeechRecognizer`.
+- **Pasting from Clipboard:** Pasting a copied link or text from the clipboard into Pandora.
+- **Manual In-App Capture:** Adding an image, link, note, or document manually through the floating capture capsule.
+- **OCR Document & Quote Scanning:** Capturing quotes and physical notes via device camera text recognition.
+- **Saving Screenshots:** Ingesting screenshots through Pandora's capture pipeline.
 
 Capture should be quick and should not require immediate organization.
 
@@ -175,7 +177,9 @@ Users should be able to inspect related items and decide whether they are useful
 
 ### 9.10 Duplicate and similar-item detection
 
-The product can identify potential duplicates or very similar saved items. It must present these as suggestions for the user to review.
+The product actively detects potential duplicates before and after save:
+- **Proactive Ingestion Duplicate Guard:** When capturing an incoming link URL or exact note title, the app queries the local vault and displays a subtle non-blocking banner (*"Already in Vault: Saved on [Date]"*) to prevent duplicate clutter.
+- **Library Duplicate Scanner:** Identifies existing identical or near-duplicate items in the vault and presents them for user review.
 
 Any action that changes or removes items requires explicit user confirmation. The user can keep both items if that is their preference.
 
@@ -189,7 +193,9 @@ The app displays a small, understandable indicator of AI usage. This gives users
 
 ### 9.13 Data ownership, backup, and device scope
 
-Pandora Version 1.0 keeps a user’s personal library on their device and does not require an account. Users can create a portable backup containing their saved items and the meaningful organization and conversation context around them: folders, tags, multi-folder membership, collections, and saved AI chat history.
+Pandora Version 1.0 keeps a user’s personal library on their device and does not require an account. Users can create a portable `.pandora` backup containing their saved items, folders, tags, multi-folder membership, collections, item relationships, and saved AI chat history.
+
+**Topological Integrity Restorer:** The backup and restoration system strictly serializes and restores entities in foreign-key topological order (`Folders` $\rightarrow$ `Tags` $\rightarrow$ `Items` $\rightarrow$ `ItemFolderCrossRef` $\rightarrow$ `ItemTagCrossRef` $\rightarrow$ `Collections` $\rightarrow$ `CollectionItemCrossRef`) with checksum validation to ensure zero SQLite foreign-key constraint violations on restore.
 
 Users can use this backup to retain control of their information and recover or move their library manually. Automatic backup, automatic cross-device sync, collaboration, and shared libraries are outside the scope of Version 1.0.
 
@@ -197,7 +203,12 @@ Users can use this backup to retain control of their information and recover or 
 
 Pandora is intended for the device owner’s personal use. It does not ask users to create or use a Google account or a Pandora account for Version 1.0.
 
-The app must offer an optional in-app access lock using the device’s established authentication experience. Whether or not this option is enabled, Pandora must clearly communicate that access to an unlocked device can affect the privacy of locally saved knowledge.
+The app offers an optional in-app multi-modal access lock supporting:
+- **Biometric Authentication:** Fingerprint and Face Unlock via AndroidX `BiometricPrompt`.
+- **Numeric PIN:** Custom PIN hashing.
+- **Interactive 3x3 Canvas Pattern Lock:** Tactile gesture node connection lock.
+
+Whether or not this option is enabled, Pandora must clearly communicate that access to an unlocked device can affect the privacy of locally saved knowledge.
 
 ## 10. Key user journeys
 

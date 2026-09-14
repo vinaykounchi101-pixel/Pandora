@@ -103,6 +103,22 @@ class SettingsViewModel @Inject constructor(
         }
     }
 
+    fun restoreBackup(uri: Uri) {
+        viewModelScope.launch {
+            _uiState.value = _uiState.value.copy(isLoading = true)
+            val result = backupManager.restoreFromUri(uri)
+            _uiState.value = _uiState.value.copy(
+                isLoading = false,
+                exportStatusMessage = if (result.isSuccess) {
+                    "Restore successful: ${result.getOrNull()?.itemCount} items recovered into vault."
+                } else {
+                    "Restore failed: ${result.exceptionOrNull()?.localizedMessage}"
+                }
+            )
+            loadSettings()
+        }
+    }
+
     fun clearStatusMessage() {
         _uiState.value = _uiState.value.copy(exportStatusMessage = null)
     }

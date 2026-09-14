@@ -1,6 +1,5 @@
 package com.pandora.app.feature.timeline
 
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -12,6 +11,7 @@ import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -19,14 +19,11 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Archive
-import androidx.compose.material.icons.filled.AutoAwesome
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Image
 import androidx.compose.material.icons.filled.Link
@@ -41,16 +38,15 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.pandora.app.core.database.dao.ItemWithRelations
 import com.pandora.app.core.database.entity.ItemType
 import com.pandora.app.core.designsystem.component.FilterPillChip
+import com.pandora.app.core.designsystem.theme.BadgeShape
+import com.pandora.app.core.designsystem.theme.ButtonShape
 import com.pandora.app.core.designsystem.theme.CardShape
-import com.pandora.app.core.designsystem.theme.IrisFixed
 import com.pandora.app.core.designsystem.theme.IrisPrimary
 import com.pandora.app.core.designsystem.theme.OutlineHairline
 import com.pandora.app.core.designsystem.theme.PandoraTypography
@@ -59,6 +55,8 @@ import com.pandora.app.core.designsystem.theme.PorcelainContainer
 import com.pandora.app.core.designsystem.theme.PorcelainContainerHigh
 import com.pandora.app.core.designsystem.theme.PorcelainContainerLow
 import com.pandora.app.core.designsystem.theme.PorcelainSheetWhite
+import com.pandora.app.core.designsystem.theme.SegmentedPillShape
+import com.pandora.app.core.designsystem.theme.Spacing
 import com.pandora.app.core.designsystem.theme.TextPrimary
 import com.pandora.app.core.designsystem.theme.TextSecondary
 import com.pandora.app.core.designsystem.theme.TextTertiary
@@ -82,36 +80,36 @@ fun TimelineScreen(
             .fillMaxSize()
             .background(PorcelainCanvas)
     ) {
-        // 1. Search Bar & Time Horizon Toggles (from screen1.png)
+        // 1. Search Bar & Time Horizon Toggles
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 20.dp, vertical = 6.dp),
+                .padding(horizontal = Spacing.Medium, vertical = Spacing.Small),
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(10.dp)
+            horizontalArrangement = Arrangement.spacedBy(Spacing.Small)
         ) {
             // Search Box
             Row(
                 modifier = Modifier
                     .weight(1f)
-                    .height(42.dp)
-                    .clip(RoundedCornerShape(9999.dp))
+                    .height(38.dp)
+                    .clip(ButtonShape)
                     .background(PorcelainContainerHigh)
-                    .padding(horizontal = 14.dp),
+                    .padding(horizontal = Spacing.MediumSmall),
                 verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
+                horizontalArrangement = Arrangement.spacedBy(Spacing.Small)
             ) {
                 Icon(
                     imageVector = Icons.Default.Search,
                     contentDescription = "Search",
                     tint = TextTertiary,
-                    modifier = Modifier.size(18.dp)
+                    modifier = Modifier.size(16.dp)
                 )
 
                 Box(modifier = Modifier.weight(1f)) {
                     if (state.searchQuery.isEmpty()) {
                         Text(
-                            text = "Search memories, links, captures",
+                            text = "Search memories, links, notes...",
                             style = PandoraTypography.bodyMedium,
                             color = TextTertiary,
                             fontSize = 13.sp
@@ -129,7 +127,7 @@ fun TimelineScreen(
                 if (state.searchQuery.isNotEmpty()) {
                     IconButton(
                         onClick = { viewModel.setSearchQuery("") },
-                        modifier = Modifier.size(24.dp)
+                        modifier = Modifier.size(20.dp)
                     ) {
                         Icon(
                             imageVector = Icons.Default.Close,
@@ -144,38 +142,40 @@ fun TimelineScreen(
             // Month / Day Toggle Capsule
             Row(
                 modifier = Modifier
-                    .clip(RoundedCornerShape(9999.dp))
+                    .clip(ButtonShape)
                     .background(PorcelainContainerHigh)
                     .padding(2.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Box(
                     modifier = Modifier
-                        .clip(RoundedCornerShape(9999.dp))
+                        .clip(BadgeShape)
                         .background(if (state.timeHorizon == TimeHorizon.MONTH) PorcelainSheetWhite else Color.Transparent)
                         .clickable { viewModel.setTimeHorizon(TimeHorizon.MONTH) }
-                        .padding(horizontal = 10.dp, vertical = 5.dp)
+                        .padding(horizontal = 8.dp, vertical = 4.dp)
                 ) {
                     Text(
                         text = "Month",
                         style = PandoraTypography.labelSmall,
                         color = if (state.timeHorizon == TimeHorizon.MONTH) IrisPrimary else TextSecondary,
-                        fontWeight = if (state.timeHorizon == TimeHorizon.MONTH) FontWeight.Bold else FontWeight.Normal
+                        fontWeight = if (state.timeHorizon == TimeHorizon.MONTH) FontWeight.Bold else FontWeight.Normal,
+                        fontSize = 11.sp
                     )
                 }
 
                 Box(
                     modifier = Modifier
-                        .clip(RoundedCornerShape(9999.dp))
+                        .clip(BadgeShape)
                         .background(if (state.timeHorizon == TimeHorizon.DAY) PorcelainSheetWhite else Color.Transparent)
                         .clickable { viewModel.setTimeHorizon(TimeHorizon.DAY) }
-                        .padding(horizontal = 10.dp, vertical = 5.dp)
+                        .padding(horizontal = 8.dp, vertical = 4.dp)
                 ) {
                     Text(
                         text = "Day",
                         style = PandoraTypography.labelSmall,
                         color = if (state.timeHorizon == TimeHorizon.DAY) IrisPrimary else TextSecondary,
-                        fontWeight = if (state.timeHorizon == TimeHorizon.DAY) FontWeight.Bold else FontWeight.Normal
+                        fontWeight = if (state.timeHorizon == TimeHorizon.DAY) FontWeight.Bold else FontWeight.Normal,
+                        fontSize = 11.sp
                     )
                 }
             }
@@ -186,8 +186,8 @@ fun TimelineScreen(
             modifier = Modifier
                 .fillMaxWidth()
                 .horizontalScroll(rememberScrollState())
-                .padding(horizontal = 20.dp, vertical = 8.dp),
-            horizontalArrangement = Arrangement.spacedBy(8.dp)
+                .padding(horizontal = Spacing.Medium, vertical = Spacing.ExtraSmall),
+            horizontalArrangement = Arrangement.spacedBy(Spacing.Small)
         ) {
             TimelineFilter.entries.forEach { filter ->
                 FilterPillChip(
@@ -209,138 +209,150 @@ fun TimelineScreen(
         } else {
             LazyColumn(
                 modifier = Modifier.fillMaxSize(),
-                contentPadding = PaddingValues(start = 20.dp, end = 20.dp, top = 8.dp, bottom = 120.dp),
-                verticalArrangement = Arrangement.spacedBy(16.dp)
+                contentPadding = PaddingValues(start = Spacing.Medium, end = Spacing.Medium, top = Spacing.Small, bottom = 96.dp),
+                verticalArrangement = Arrangement.spacedBy(Spacing.Medium)
             ) {
-                // Section: Today
-                item {
-                    TimelineSectionHeader(
-                        title = "Today",
-                        subtitle = "Oct 24",
-                        itemCount = "4 items"
-                    )
-                }
-
-                // Bento Hero Diagram
-                val heroItem = state.items.find { it.item.itemType == ItemType.IMAGE }
-                if (heroItem != null) {
+                // Dynamic Items Feed
+                if (state.items.isEmpty()) {
                     item {
-                        HeroDiagramCard(
-                            itemWithRelations = heroItem,
-                            onClick = { onItemClick(heroItem.item.id) },
-                            onBookmarkClick = { viewModel.toggleFavorite(heroItem) },
-                            onInspectClick = { onItemClick(heroItem.item.id) }
-                        )
-                    }
-                }
-
-                // Bento 2-Column Row: Article + Note
-                val articleItem = state.items.find { it.item.itemType == ItemType.ARTICLE }
-                val noteItem = state.items.find { it.item.itemType == ItemType.NOTE && it.item.title == "Quiet Architecture" }
-                if (articleItem != null || noteItem != null) {
-                    item {
-                        Row(
+                        Box(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .height(IntrinsicSize.Max),
-                            horizontalArrangement = Arrangement.spacedBy(12.dp)
+                                .padding(vertical = 48.dp),
+                            contentAlignment = Alignment.Center
                         ) {
-                            if (articleItem != null) {
-                                ArticleTile(
-                                    itemWithRelations = articleItem,
-                                    onClick = { onItemClick(articleItem.item.id) },
-                                    modifier = Modifier.weight(1f)
+                            Column(
+                                horizontalAlignment = Alignment.CenterHorizontally,
+                                verticalArrangement = Arrangement.spacedBy(Spacing.Small)
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Default.Search,
+                                    contentDescription = null,
+                                    tint = TextTertiary,
+                                    modifier = Modifier.size(40.dp)
                                 )
-                            }
-                            if (noteItem != null) {
-                                NoteTile(
-                                    itemWithRelations = noteItem,
-                                    onClick = { onItemClick(noteItem.item.id) },
-                                    modifier = Modifier.weight(1f)
+                                Text(
+                                    text = if (state.searchQuery.isNotEmpty()) "No memories matching \"${state.searchQuery}\"" else "Your vault is empty",
+                                    style = PandoraTypography.headlineSmall,
+                                    color = TextSecondary,
+                                    fontSize = 16.sp
+                                )
+                                Text(
+                                    text = "Capture a note, link, or photo using the floating bar below",
+                                    style = PandoraTypography.bodySmall,
+                                    color = TextTertiary
                                 )
                             }
                         }
                     }
-                }
-
-                // Section: Yesterday
-                item {
-                    Spacer(modifier = Modifier.height(10.dp))
-                    TimelineSectionHeader(
-                        title = "Yesterday",
-                        subtitle = "Oct 23",
-                        itemCount = "3 items"
-                    )
-                }
-
-                // Full-width Thought Reflection
-                val thoughtItem = state.items.find { it.item.title.contains("Cognitive Load") }
-                if (thoughtItem != null) {
+                } else {
+                    // Section: Recent Captures
                     item {
-                        FullWidthThoughtCard(
-                            itemWithRelations = thoughtItem,
-                            onClick = { onItemClick(thoughtItem.item.id) }
+                        TimelineSectionHeader(
+                            title = if (state.timeHorizon == TimeHorizon.MONTH) "This Month" else "Today",
+                            subtitle = if (state.activeFilter == TimelineFilter.ALL) "Chronological Feed" else state.activeFilter.label,
+                            itemCount = "${state.items.size} items"
                         )
                     }
-                }
 
-                // Bento 2-Column Row: PDF + Voice Memo
-                val pdfItem = state.items.find { it.item.itemType == ItemType.DOCUMENT }
-                val voiceItem = state.items.find { it.item.itemType == ItemType.VOICE }
-                if (pdfItem != null || voiceItem != null) {
-                    item {
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .height(IntrinsicSize.Max),
-                            horizontalArrangement = Arrangement.spacedBy(12.dp)
-                        ) {
-                            if (pdfItem != null) {
-                                PdfTile(
-                                    itemWithRelations = pdfItem,
-                                    onClick = { onItemClick(pdfItem.item.id) },
-                                    modifier = Modifier.weight(1f)
+                    // Dynamically Render Items
+                    val items = state.items
+                    var i = 0
+                    while (i < items.size) {
+                        val current = items[i]
+
+                        if (current.item.itemType == ItemType.IMAGE) {
+                            item(key = "item_${current.item.id}") {
+                                HeroDiagramCard(
+                                    itemWithRelations = current,
+                                    onClick = { onItemClick(current.item.id) },
+                                    onBookmarkClick = { viewModel.toggleFavorite(current) },
+                                    onInspectClick = { onItemClick(current.item.id) }
                                 )
                             }
-                            if (voiceItem != null) {
-                                VoiceMemoTile(
-                                    itemWithRelations = voiceItem,
-                                    onClick = { onItemClick(voiceItem.item.id) },
-                                    modifier = Modifier.weight(1f)
+                            i++
+                        } else if (current.item.itemType == ItemType.NOTE && current.item.fullContent.length > 120) {
+                            item(key = "item_${current.item.id}") {
+                                FullWidthThoughtCard(
+                                    itemWithRelations = current,
+                                    onClick = { onItemClick(current.item.id) }
                                 )
                             }
+                            i++
+                        } else if (i + 1 < items.size && items[i + 1].item.itemType != ItemType.IMAGE && !(items[i + 1].item.itemType == ItemType.NOTE && items[i + 1].item.fullContent.length > 120)) {
+                            val next = items[i + 1]
+                            item(key = "pair_${current.item.id}_${next.item.id}") {
+                                Row(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .height(IntrinsicSize.Max),
+                                    horizontalArrangement = Arrangement.spacedBy(Spacing.MediumSmall)
+                                ) {
+                                    Box(modifier = Modifier.weight(1f)) {
+                                        DynamicItemTile(
+                                            itemWithRelations = current,
+                                            onClick = { onItemClick(current.item.id) },
+                                            modifier = Modifier
+                                                .fillMaxWidth()
+                                                .fillMaxHeight()
+                                        )
+                                    }
+                                    Box(modifier = Modifier.weight(1f)) {
+                                        DynamicItemTile(
+                                            itemWithRelations = next,
+                                            onClick = { onItemClick(next.item.id) },
+                                            modifier = Modifier
+                                                .fillMaxWidth()
+                                                .fillMaxHeight()
+                                        )
+                                    }
+                                }
+                            }
+                            i += 2
+                        } else {
+                            item(key = "single_${current.item.id}") {
+                                DynamicItemTile(
+                                    itemWithRelations = current,
+                                    onClick = { onItemClick(current.item.id) }
+                                )
+                            }
+                            i++
                         }
                     }
-                }
 
-                // Section: Last Week Summarized Stacks
-                item {
-                    Spacer(modifier = Modifier.height(10.dp))
-                    TimelineSectionHeader(
-                        title = "Last Week",
-                        subtitle = "Oct 17 - 21",
-                        itemCount = "12 items"
-                    )
-                    Spacer(modifier = Modifier.height(8.dp))
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.spacedBy(10.dp)
-                    ) {
-                        ArchiveSummaryCard(
-                            icon = Icons.Default.Image,
-                            label = "8 Snaps",
-                            modifier = Modifier.weight(1f)
+                    // Section: Vault Stacks Overview
+                    item {
+                        Spacer(modifier = Modifier.height(Spacing.Small))
+                        TimelineSectionHeader(
+                            title = "Vault Overview",
+                            subtitle = "Categorized Stacks",
+                            itemCount = "${state.totalCount.coerceAtLeast(state.items.size)} total"
                         )
-                        ArchiveSummaryCard(
-                            icon = Icons.Default.Link,
-                            label = "3 Links",
-                            modifier = Modifier.weight(1f)
-                        )
-                        ArchiveSummaryCard(
-                            icon = Icons.Default.Archive,
-                            label = "Archive",
-                            modifier = Modifier.weight(1f)
-                        )
+                        Spacer(modifier = Modifier.height(Spacing.Small))
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.spacedBy(Spacing.Small)
+                        ) {
+                            val noteCount = state.items.count { it.item.itemType == ItemType.NOTE }
+                            val articleCount = state.items.count { it.item.itemType == ItemType.ARTICLE }
+                            val imageCount = state.items.count { it.item.itemType == ItemType.IMAGE }
+
+                            ArchiveSummaryCard(
+                                icon = Icons.Default.Image,
+                                label = "$imageCount Snaps",
+                                modifier = Modifier.weight(1f)
+                            )
+                            ArchiveSummaryCard(
+                                icon = Icons.Default.Link,
+                                label = "$articleCount Links",
+                                modifier = Modifier.weight(1f)
+                            )
+                            ArchiveSummaryCard(
+                                icon = Icons.Default.Archive,
+                                label = "$noteCount Notes",
+                                modifier = Modifier.weight(1f)
+                            )
+                        }
                     }
                 }
             }
@@ -362,33 +374,33 @@ fun TimelineSectionHeader(
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(8.dp)
+            horizontalArrangement = Arrangement.spacedBy(Spacing.Small)
         ) {
             Text(
                 text = title,
                 style = PandoraTypography.headlineMedium,
-                fontSize = 20.sp,
-                fontWeight = FontWeight.Bold,
+                fontSize = 19.sp,
+                fontWeight = FontWeight.SemiBold,
                 color = TextPrimary
             )
             Text(
                 text = subtitle,
-                style = PandoraTypography.bodyMedium,
+                style = PandoraTypography.bodySmall,
                 color = TextTertiary
             )
         }
 
         Box(
             modifier = Modifier
-                .clip(RoundedCornerShape(9999.dp))
+                .clip(BadgeShape)
                 .background(PorcelainContainer)
-                .padding(horizontal = 8.dp, vertical = 3.dp)
+                .padding(horizontal = 6.dp, vertical = 2.dp)
         ) {
             Text(
                 text = itemCount,
                 style = PandoraTypography.labelSmall,
                 color = TextSecondary,
-                fontSize = 11.sp
+                fontSize = 10.sp
             )
         }
     }
@@ -402,11 +414,11 @@ fun ArchiveSummaryCard(
 ) {
     Column(
         modifier = modifier
-            .clip(RoundedCornerShape(16.dp))
+            .clip(CardShape)
             .background(PorcelainContainerLow)
-            .border(1.dp, OutlineHairline, RoundedCornerShape(16.dp))
+            .border(1.dp, OutlineHairline, CardShape)
             .clickable { }
-            .padding(vertical = 16.dp, horizontal = 12.dp),
+            .padding(vertical = Spacing.Medium, horizontal = Spacing.Small),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
@@ -414,9 +426,9 @@ fun ArchiveSummaryCard(
             imageVector = icon,
             contentDescription = label,
             tint = IrisPrimary,
-            modifier = Modifier.size(22.dp)
+            modifier = Modifier.size(20.dp)
         )
-        Spacer(modifier = Modifier.height(6.dp))
+        Spacer(modifier = Modifier.height(Spacing.ExtraSmall))
         Text(
             text = label,
             style = PandoraTypography.labelSmall,
@@ -425,3 +437,19 @@ fun ArchiveSummaryCard(
         )
     }
 }
+
+@Composable
+fun DynamicItemTile(
+    itemWithRelations: com.pandora.app.core.database.dao.ItemWithRelations,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    when (itemWithRelations.item.itemType) {
+        ItemType.ARTICLE -> ArticleTile(itemWithRelations = itemWithRelations, onClick = onClick, modifier = modifier)
+        ItemType.NOTE -> NoteTile(itemWithRelations = itemWithRelations, onClick = onClick, modifier = modifier)
+        ItemType.DOCUMENT -> PdfTile(itemWithRelations = itemWithRelations, onClick = onClick, modifier = modifier)
+        ItemType.VOICE -> VoiceMemoTile(itemWithRelations = itemWithRelations, onClick = onClick, modifier = modifier)
+        else -> NoteTile(itemWithRelations = itemWithRelations, onClick = onClick, modifier = modifier)
+    }
+}
+
