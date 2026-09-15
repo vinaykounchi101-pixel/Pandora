@@ -25,6 +25,7 @@ graph TD
 - **Presentation Layer (`feature/*`, `navigation`)**:
   - `feature/timeline`: Dynamic Bento 2-column masonry timeline feed (`TimelineScreen`, `HeroDiagramCard`, `ArticleTile`, `NoteTile`, `VoiceMemoTile`).
   - `feature/organize`: Structured repository hub (`OrganizeScreen`, Spotlight Carousels, Folder Accordions, Tag Cloud).
+  - `feature/ai`: Flagship Pandora AI Copilot (`PandoraAiScreen`, `PandoraAiViewModel`, multi-scope selector for `Artifacts`, `Folders`, and `Collections`, `Paste Link` dialog, Executive Summaries, and multi-turn scoped Q&A).
   - `feature/reader`: Content-aware reader (`ItemDetailScreen`, quote highlights, breadcrumbs, waveform).
   - `feature/search`: FTS5 full-text search with instant typing response and type pill filters (`SearchScreen`, `SearchViewModel`).
   - `feature/settings`: BYOK API key manager, Biometric Vault switch, and SAF Backup trigger (`SettingsScreen`).

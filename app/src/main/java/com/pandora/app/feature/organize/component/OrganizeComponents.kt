@@ -172,7 +172,7 @@ fun CollectionsSpotlightCarousel(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
-                        text = "${collectionWithItems.items.size.coerceAtLeast(8)} artifacts",
+                        text = "${collectionWithItems.items.size} artifacts",
                         style = PandoraTypography.labelSmall,
                         color = TextSecondary,
                         fontWeight = FontWeight.SemiBold
@@ -313,7 +313,7 @@ fun FolderAccordionItem(
                         }
                     }
                     Text(
-                        text = "${folderWithSubfolders.items.size.coerceAtLeast(24)} items · Modified 3h ago",
+                        text = "${folderWithSubfolders.items.size} items",
                         style = PandoraTypography.bodySmall,
                         color = TextSecondary,
                         fontSize = 11.sp
@@ -385,15 +385,7 @@ fun FolderAccordionItem(
                             )
                         }
 
-                        Text(
-                            text = "16",
-                            style = PandoraTypography.labelSmall,
-                            color = TextSecondary,
-                            modifier = Modifier
-                                .clip(RoundedCornerShape(9999.dp))
-                                .background(PorcelainContainer)
-                                .padding(horizontal = 6.dp, vertical = 2.dp)
-                        )
+
                     }
                 }
             }
@@ -460,7 +452,7 @@ fun TagCloudSection(
                         fontSize = 12.sp
                     )
                     Text(
-                        text = "${tagWithCount.itemCount.coerceAtLeast(5)}",
+                        text = "${tagWithCount.itemCount}",
                         style = PandoraTypography.labelSmall,
                         color = textTint.copy(alpha = 0.7f),
                         fontSize = 10.sp

@@ -1,5 +1,6 @@
 package com.pandora.app.feature.timeline.component
 
+import android.content.Intent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -8,6 +9,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -18,22 +20,34 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Bookmark
 import androidx.compose.material.icons.filled.BookmarkBorder
 import androidx.compose.material.icons.filled.Folder
+import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Screenshot
 import androidx.compose.material.icons.filled.ZoomIn
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil.compose.AsyncImage
+import java.io.File
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 import com.pandora.app.core.database.dao.ItemWithRelations
 import com.pandora.app.core.designsystem.theme.ApricotFixed
 import com.pandora.app.core.designsystem.theme.BadgeShape
-import com.pandora.app.core.designsystem.theme.ButtonShape
 import com.pandora.app.core.designsystem.theme.CardShape
 import com.pandora.app.core.designsystem.theme.DarkCapsuleSurface
 import com.pandora.app.core.designsystem.theme.InverseOnSurface
@@ -58,9 +72,14 @@ fun HeroDiagramCard(
     onClick: () -> Unit,
     onBookmarkClick: () -> Unit,
     onInspectClick: () -> Unit,
+    onFavoriteToggle: (() -> Unit)? = null,
+    onDeleteClick: (() -> Unit)? = null,
     modifier: Modifier = Modifier
 ) {
     val item = itemWithRelations.item
+    val context = LocalContext.current
+    var showMenu by remember { mutableStateOf(false) }
+    val formattedTime = SimpleDateFormat("h:mm a", Locale.getDefault()).format(Date(item.createdAt))
 
     Column(
         modifier = modifier
@@ -97,17 +116,56 @@ fun HeroDiagramCard(
                     )
                 }
                 Text(
-                    text = item.capturedFromApp ?: "Captured from Chrome",
+                    text = item.capturedFromApp ?: "Vault Capture",
                     style = PandoraTypography.labelSmall,
                     color = TextSecondary
                 )
             }
-            Text(
-                text = "11:42 AM",
-                style = PandoraTypography.bodySmall,
-                color = TextTertiary,
-                fontSize = 11.sp
-            )
+
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Text(
+                    text = formattedTime,
+                    style = PandoraTypography.bodySmall,
+                    color = TextTertiary,
+                    fontSize = 11.sp
+                )
+                Box {
+                    IconButton(
+                        onClick = { showMenu = true },
+                        modifier = Modifier.size(24.dp)
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.MoreVert,
+                            contentDescription = "Options",
+                            tint = TextTertiary,
+                            modifier = Modifier.size(16.dp)
+                        )
+                    }
+
+                    ItemCardDropdownMenu(
+                        expanded = showMenu,
+                        onDismiss = { showMenu = false },
+                        isFavorite = item.isFavorite,
+                        onFavoriteToggle = {
+                            showMenu = false
+                            onFavoriteToggle?.invoke() ?: onBookmarkClick()
+                        },
+                        onShare = {
+                            showMenu = false
+                            val sendIntent = Intent().apply {
+                                action = Intent.ACTION_SEND
+                                putExtra(Intent.EXTRA_TEXT, "${item.title}\n${item.excerpt}")
+                                type = "text/plain"
+                            }
+                            context.startActivity(Intent.createChooser(sendIntent, "Share Image"))
+                        },
+                        onDelete = {
+                            showMenu = false
+                            onDeleteClick?.invoke()
+                        }
+                    )
+                }
+            }
         }
 
         Spacer(modifier = Modifier.height(Spacing.Small))
@@ -124,40 +182,53 @@ fun HeroDiagramCard(
 
         Spacer(modifier = Modifier.height(Spacing.MediumSmall))
 
-        // Embedded Diagram Canvas Mock
+        val hasValidFile = !item.localFilePath.isNullOrBlank() && File(item.localFilePath).exists()
+
+        // Embedded Diagram Canvas / Image Photo
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(130.dp)
-                .clip(RoundedCornerShape(10.dp))
+                .height(if (hasValidFile) 200.dp else 130.dp)
+                .clip(RoundedCornerShape(12.dp))
                 .background(PorcelainContainer)
-                .border(1.dp, OutlineHairline, RoundedCornerShape(10.dp))
-                .padding(Spacing.MediumSmall)
+                .border(1.dp, OutlineHairline, RoundedCornerShape(12.dp))
         ) {
-            Column(
-                modifier = Modifier.align(Alignment.Center),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Text(
-                    text = "Pandora - Chronological Timeline Architecture",
-                    style = PandoraTypography.labelMedium,
-                    color = TextSecondary,
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 12.sp
+            if (hasValidFile) {
+                AsyncImage(
+                    model = File(item.localFilePath!!),
+                    contentDescription = item.title,
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier.fillMaxSize()
                 )
-                Spacer(modifier = Modifier.height(Spacing.ExtraSmall))
-                Text(
-                    text = "[ Ingestion ] ➔ [ SQLite + FTS5 ] ➔ [ Private Vault ]",
-                    style = PandoraTypography.bodySmall,
-                    color = IrisPrimary,
-                    fontSize = 11.sp
-                )
+            } else {
+                Column(
+                    modifier = Modifier
+                        .align(Alignment.Center)
+                        .padding(Spacing.MediumSmall),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Text(
+                        text = item.title.ifBlank { "Visual Capture" },
+                        style = PandoraTypography.labelMedium,
+                        color = TextSecondary,
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 12.sp
+                    )
+                    Spacer(modifier = Modifier.height(Spacing.ExtraSmall))
+                    Text(
+                        text = "Encrypted in offline vault",
+                        style = PandoraTypography.bodySmall,
+                        color = IrisPrimary,
+                        fontSize = 11.sp
+                    )
+                }
             }
 
             // Inspect Overlay Button
             Row(
                 modifier = Modifier
                     .align(Alignment.BottomEnd)
+                    .padding(8.dp)
                     .clip(BadgeShape)
                     .background(DarkCapsuleSurface.copy(alpha = 0.9f))
                     .clickable(onClick = onInspectClick)
@@ -172,7 +243,7 @@ fun HeroDiagramCard(
                     modifier = Modifier.size(12.dp)
                 )
                 Text(
-                    text = "Inspect Diagram",
+                    text = "Inspect Details",
                     style = PandoraTypography.labelSmall,
                     color = InverseOnSurface,
                     fontSize = 10.sp
@@ -252,9 +323,14 @@ fun HeroDiagramCard(
 fun FullWidthThoughtCard(
     itemWithRelations: ItemWithRelations,
     onClick: () -> Unit,
+    onFavoriteToggle: (() -> Unit)? = null,
+    onDeleteClick: (() -> Unit)? = null,
     modifier: Modifier = Modifier
 ) {
     val item = itemWithRelations.item
+    val context = LocalContext.current
+    var showMenu by remember { mutableStateOf(false) }
+    val formattedTime = SimpleDateFormat("h:mm a", Locale.getDefault()).format(Date(item.createdAt))
 
     Column(
         modifier = modifier
@@ -277,12 +353,50 @@ fun FullWidthThoughtCard(
                 color = TextPrimary,
                 fontSize = 17.sp
             )
-            Text(
-                text = "5:18 PM",
-                style = PandoraTypography.bodySmall,
-                color = TextTertiary,
-                fontSize = 11.sp
-            )
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Text(
+                    text = formattedTime,
+                    style = PandoraTypography.bodySmall,
+                    color = TextTertiary,
+                    fontSize = 11.sp
+                )
+                Box {
+                    IconButton(
+                        onClick = { showMenu = true },
+                        modifier = Modifier.size(24.dp)
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.MoreVert,
+                            contentDescription = "Options",
+                            tint = TextTertiary,
+                            modifier = Modifier.size(16.dp)
+                        )
+                    }
+
+                    ItemCardDropdownMenu(
+                        expanded = showMenu,
+                        onDismiss = { showMenu = false },
+                        isFavorite = item.isFavorite,
+                        onFavoriteToggle = {
+                            showMenu = false
+                            onFavoriteToggle?.invoke()
+                        },
+                        onShare = {
+                            showMenu = false
+                            val sendIntent = Intent().apply {
+                                action = Intent.ACTION_SEND
+                                putExtra(Intent.EXTRA_TEXT, "${item.title}\n\n${item.fullContent.ifBlank { item.excerpt }}")
+                                type = "text/plain"
+                            }
+                            context.startActivity(Intent.createChooser(sendIntent, "Share Note"))
+                        },
+                        onDelete = {
+                            showMenu = false
+                            onDeleteClick?.invoke()
+                        }
+                    )
+                }
+            }
         }
 
         Spacer(modifier = Modifier.height(Spacing.Small))
@@ -295,7 +409,7 @@ fun FullWidthThoughtCard(
                 .padding(Spacing.MediumSmall)
         ) {
             Text(
-                text = item.excerpt.ifBlank { item.fullContent },
+                text = item.fullContent.ifBlank { item.excerpt.ifBlank { item.title } },
                 style = QuoteItalicStyle,
                 color = TextPrimary,
                 fontSize = 14.sp,
@@ -303,33 +417,35 @@ fun FullWidthThoughtCard(
             )
         }
 
-        Spacer(modifier = Modifier.height(Spacing.MediumSmall))
+        if (itemWithRelations.folders.isNotEmpty()) {
+            Spacer(modifier = Modifier.height(Spacing.MediumSmall))
 
-        Row(
-            horizontalArrangement = Arrangement.spacedBy(Spacing.ExtraSmall),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            itemWithRelations.folders.forEach { folder ->
-                Row(
-                    modifier = Modifier
-                        .clip(TagChipShape)
-                        .background(PorcelainContainer)
-                        .padding(horizontal = 7.dp, vertical = 3.dp),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(3.dp)
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.Folder,
-                        contentDescription = null,
-                        tint = TextSecondary,
-                        modifier = Modifier.size(11.dp)
-                    )
-                    Text(
-                        text = folder.name,
-                        style = PandoraTypography.labelSmall,
-                        color = TextSecondary,
-                        fontSize = 10.sp
-                    )
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(Spacing.ExtraSmall),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                itemWithRelations.folders.forEach { folder ->
+                    Row(
+                        modifier = Modifier
+                            .clip(TagChipShape)
+                            .background(PorcelainContainer)
+                            .padding(horizontal = 7.dp, vertical = 3.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(3.dp)
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Folder,
+                            contentDescription = null,
+                            tint = TextSecondary,
+                            modifier = Modifier.size(11.dp)
+                        )
+                        Text(
+                            text = folder.name,
+                            style = PandoraTypography.labelSmall,
+                            color = TextSecondary,
+                            fontSize = 10.sp
+                        )
+                    }
                 }
             }
         }

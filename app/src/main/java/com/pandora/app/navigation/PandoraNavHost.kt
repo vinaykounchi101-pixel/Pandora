@@ -13,6 +13,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -100,6 +101,7 @@ fun PandoraNavHost(
         Screen.Timeline.route,
         Screen.Organize.route,
         Screen.Search.route,
+        Screen.PandoraAi.route,
         Screen.Explore.route
     )
 
@@ -113,7 +115,8 @@ fun PandoraNavHost(
                     val screenTitle = when (currentRoute) {
                         Screen.Organize.route -> "Organize"
                         Screen.Search.route -> "Search"
-                        Screen.Explore.route -> "Explore"
+                        Screen.PandoraAi.route -> "Pandora AI"
+                        Screen.Explore.route -> "Pandora AI"
                         else -> "Timeline"
                     }
                     PandoraTopAppBar(
@@ -197,18 +200,19 @@ fun PandoraNavHost(
                     )
                 }
 
+                composable(Screen.PandoraAi.route) {
+                    val aiViewModel: com.pandora.app.feature.ai.PandoraAiViewModel = hiltViewModel()
+                    com.pandora.app.feature.ai.PandoraAiScreen(
+                        viewModel = aiViewModel,
+                        onNavigateToSettings = { navController.navigate(Screen.Settings.route) }
+                    )
+                }
+
                 composable(Screen.Explore.route) {
-                    OrganizeScreen(
-                        viewModel = organizeViewModel,
-                        onFolderClick = { folderId ->
-                            navController.navigate(Screen.Search.route)
-                        },
-                        onCollectionClick = { collectionId ->
-                            navController.navigate(Screen.Search.route)
-                        },
-                        onTagClick = { tag ->
-                            navController.navigate(Screen.Search.route)
-                        }
+                    val aiViewModel: com.pandora.app.feature.ai.PandoraAiViewModel = hiltViewModel()
+                    com.pandora.app.feature.ai.PandoraAiScreen(
+                        viewModel = aiViewModel,
+                        onNavigateToSettings = { navController.navigate(Screen.Settings.route) }
                     )
                 }
 
@@ -272,19 +276,28 @@ fun PandoraNavHost(
 
     // Modal Bottom Sheets
     if (showAiProposalSheet) {
+        val availableFolders by timelineViewModel.availableFolders.collectAsState()
         AiProposalBottomSheet(
             onDismiss = { showAiProposalSheet = false },
-            onApprove = { folders, tags ->
+            availableFolders = availableFolders,
+            voiceHelper = timelineViewModel.voiceHelper,
+            duplicateGuardHelper = timelineViewModel.duplicateGuardHelper,
+            onSaveUniversal = { itemType, title, content, sourceUrl, fileUri, tags, folderId ->
                 showAiProposalSheet = false
-                coroutineScope.launch {
-                    snackbarHostState.showSnackbar("Saved to ${folders.joinToString()} and tagged")
-                }
-            },
-            onDecline = {
-                showAiProposalSheet = false
-                coroutineScope.launch {
-                    snackbarHostState.showSnackbar("AI suggestion dismissed. Manual catalog opened.")
-                }
+                timelineViewModel.saveUniversalItem(
+                    itemType = itemType,
+                    title = title,
+                    content = content,
+                    sourceUrl = sourceUrl,
+                    fileUri = fileUri,
+                    tags = tags,
+                    folderId = folderId,
+                    onSaved = {
+                        coroutineScope.launch {
+                            snackbarHostState.showSnackbar("Artifact securely saved to Vault")
+                        }
+                    }
+                )
             }
         )
     }

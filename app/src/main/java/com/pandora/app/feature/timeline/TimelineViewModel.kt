@@ -40,6 +40,7 @@ data class TimelineUiState(
 @HiltViewModel
 class TimelineViewModel @Inject constructor(
     private val itemRepository: ItemRepository,
+    private val organizationRepository: com.pandora.app.data.repository.OrganizationRepository,
     private val databaseSeeder: DatabaseSeeder,
     val incomingShareManager: com.pandora.app.core.util.IncomingShareManager,
     val voiceHelper: com.pandora.app.core.util.VoiceRecognitionHelper,
@@ -50,6 +51,13 @@ class TimelineViewModel @Inject constructor(
     private val _activeFilter = MutableStateFlow(TimelineFilter.ALL)
     private val _timeHorizon = MutableStateFlow(TimeHorizon.DAY)
     private val _searchQuery = MutableStateFlow("")
+
+    val availableFolders: StateFlow<List<com.pandora.app.core.database.entity.FolderEntity>> =
+        organizationRepository.getAllFolders().stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5000),
+            initialValue = emptyList()
+        )
 
     val uiState: StateFlow<TimelineUiState> = combine(
         itemRepository.getAllItems(),
@@ -147,6 +155,69 @@ class TimelineViewModel @Inject constructor(
                 createdAt = System.currentTimeMillis()
             )
             itemRepository.saveItem(item)
+        }
+    }
+
+    fun saveUniversalItem(
+        itemType: ItemType,
+        title: String,
+        content: String,
+        sourceUrl: String? = null,
+        fileUri: android.net.Uri? = null,
+        tags: List<String> = emptyList(),
+        folderId: Long? = null,
+        onSaved: (() -> Unit)? = null
+    ) {
+        viewModelScope.launch {
+            var localPath: String? = null
+            var fileSize = 0L
+
+            if (fileUri != null) {
+                val saved = vaultStorageManager.copyUriToVault(fileUri)
+                localPath = saved?.first
+                fileSize = saved?.second ?: 0L
+            }
+
+            val fallbackExcerpt = when (itemType) {
+                ItemType.IMAGE -> "Captured photo / screenshot saved to vault"
+                ItemType.DOCUMENT -> "Offline document / PDF saved to vault"
+                ItemType.VOICE -> "Voice thought / dictation"
+                ItemType.ARTICLE -> sourceUrl ?: content
+                ItemType.NOTE -> content.take(120)
+            }
+
+            val item = com.pandora.app.core.database.entity.ItemEntity(
+                itemType = itemType,
+                title = title.ifBlank {
+                    when (itemType) {
+                        ItemType.NOTE -> "Personal Note"
+                        ItemType.IMAGE -> "Photo Capture"
+                        ItemType.DOCUMENT -> "Saved Document"
+                        ItemType.ARTICLE -> sourceUrl ?: "Web Link"
+                        ItemType.VOICE -> "Voice Thought"
+                    }
+                },
+                sourceUrl = sourceUrl,
+                localFilePath = localPath,
+                fileSizeBytes = fileSize,
+                excerpt = if (content.isNotBlank()) content.take(120) else fallbackExcerpt,
+                fullContent = content.ifBlank { fallbackExcerpt },
+                createdAt = System.currentTimeMillis()
+            )
+
+            // Resolve / create tag IDs
+            val tagIds = mutableListOf<Long>()
+            tags.forEach { tagName ->
+                if (tagName.isNotBlank()) {
+                    val cleanTag = tagName.trim().removePrefix("#").lowercase()
+                    val tagId = organizationRepository.createTag(cleanTag)
+                    tagIds.add(tagId)
+                }
+            }
+
+            val folderIds = if (folderId != null) listOf(folderId) else emptyList()
+            itemRepository.saveItem(item, folderIds, tagIds)
+            onSaved?.invoke()
         }
     }
 

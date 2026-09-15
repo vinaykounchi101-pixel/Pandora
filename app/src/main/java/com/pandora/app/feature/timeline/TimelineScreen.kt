@@ -19,11 +19,14 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Archive
+import androidx.compose.material.icons.filled.AutoAwesome
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Image
 import androidx.compose.material.icons.filled.Link
@@ -38,15 +41,27 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil.compose.AsyncImage
+import java.io.File
+import androidx.compose.material.icons.filled.Description
+import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.filled.Mic
+import com.pandora.app.core.database.dao.ItemWithRelations
 import com.pandora.app.core.database.entity.ItemType
 import com.pandora.app.core.designsystem.component.FilterPillChip
+import com.pandora.app.core.designsystem.theme.ApricotOrange
 import com.pandora.app.core.designsystem.theme.BadgeShape
 import com.pandora.app.core.designsystem.theme.ButtonShape
 import com.pandora.app.core.designsystem.theme.CardShape
+import com.pandora.app.core.designsystem.theme.CeruleanDark
+import com.pandora.app.core.designsystem.theme.IrisFixed
 import com.pandora.app.core.designsystem.theme.IrisPrimary
 import com.pandora.app.core.designsystem.theme.OutlineHairline
 import com.pandora.app.core.designsystem.theme.PandoraTypography
@@ -63,6 +78,7 @@ import com.pandora.app.core.designsystem.theme.TextTertiary
 import com.pandora.app.feature.timeline.component.ArticleTile
 import com.pandora.app.feature.timeline.component.FullWidthThoughtCard
 import com.pandora.app.feature.timeline.component.HeroDiagramCard
+import com.pandora.app.feature.timeline.component.ImageTile
 import com.pandora.app.feature.timeline.component.NoteTile
 import com.pandora.app.feature.timeline.component.PdfTile
 import com.pandora.app.feature.timeline.component.VoiceMemoTile
@@ -246,40 +262,93 @@ fun TimelineScreen(
                         }
                     }
                 } else {
-                    // Section: Recent Captures
+                    // 1. Section: Latest Saves Horizontal Spotlight Reel
                     item {
+                        Column(verticalArrangement = Arrangement.spacedBy(Spacing.Small)) {
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.SpaceBetween,
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Row(
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    horizontalArrangement = Arrangement.spacedBy(Spacing.Small)
+                                ) {
+                                    Icon(
+                                        imageVector = Icons.Default.AutoAwesome,
+                                        contentDescription = null,
+                                        tint = IrisPrimary,
+                                        modifier = Modifier.size(16.dp)
+                                    )
+                                    Text(
+                                        text = "Latest Saves",
+                                        style = PandoraTypography.headlineMedium,
+                                        fontSize = 18.sp,
+                                        fontWeight = FontWeight.SemiBold,
+                                        color = TextPrimary
+                                    )
+                                }
+                                Text(
+                                    text = "Tap to open",
+                                    style = PandoraTypography.labelSmall,
+                                    color = TextTertiary,
+                                    fontSize = 11.sp
+                                )
+                            }
+
+                            LazyRow(
+                                horizontalArrangement = Arrangement.spacedBy(Spacing.MediumSmall),
+                                contentPadding = PaddingValues(vertical = 2.dp)
+                            ) {
+                                items(items = state.items.take(6), key = { "latest_${it.item.id}" }) { itemWithRelations ->
+                                    LatestSaveCard(
+                                        itemWithRelations = itemWithRelations,
+                                        onClick = { onItemClick(itemWithRelations.item.id) }
+                                    )
+                                }
+                            }
+                        }
+                    }
+
+                    // 2. Section: Main Gallery Feed
+                    item {
+                        Spacer(modifier = Modifier.height(Spacing.Small))
                         TimelineSectionHeader(
-                            title = if (state.timeHorizon == TimeHorizon.MONTH) "This Month" else "Today",
+                            title = if (state.timeHorizon == TimeHorizon.MONTH) "This Month" else "Today's Gallery",
                             subtitle = if (state.activeFilter == TimelineFilter.ALL) "Chronological Feed" else state.activeFilter.label,
                             itemCount = "${state.items.size} items"
                         )
                     }
 
-                    // Dynamically Render Items
+                    // Dynamically Render Gallery Grid Items
                     val items = state.items
                     var i = 0
                     while (i < items.size) {
                         val current = items[i]
 
-                        if (current.item.itemType == ItemType.IMAGE) {
+                        if (current.item.itemType == ItemType.IMAGE && current.item.localFilePath != null) {
                             item(key = "item_${current.item.id}") {
                                 HeroDiagramCard(
                                     itemWithRelations = current,
                                     onClick = { onItemClick(current.item.id) },
                                     onBookmarkClick = { viewModel.toggleFavorite(current) },
-                                    onInspectClick = { onItemClick(current.item.id) }
+                                    onInspectClick = { onItemClick(current.item.id) },
+                                    onFavoriteToggle = { viewModel.toggleFavorite(current) },
+                                    onDeleteClick = { viewModel.deleteItem(current) }
                                 )
                             }
                             i++
-                        } else if (current.item.itemType == ItemType.NOTE && current.item.fullContent.length > 120) {
+                        } else if (current.item.itemType == ItemType.NOTE && current.item.fullContent.length > 140) {
                             item(key = "item_${current.item.id}") {
                                 FullWidthThoughtCard(
                                     itemWithRelations = current,
-                                    onClick = { onItemClick(current.item.id) }
+                                    onClick = { onItemClick(current.item.id) },
+                                    onFavoriteToggle = { viewModel.toggleFavorite(current) },
+                                    onDeleteClick = { viewModel.deleteItem(current) }
                                 )
                             }
                             i++
-                        } else if (i + 1 < items.size && items[i + 1].item.itemType != ItemType.IMAGE && !(items[i + 1].item.itemType == ItemType.NOTE && items[i + 1].item.fullContent.length > 120)) {
+                        } else if (i + 1 < items.size && !(current.item.itemType == ItemType.IMAGE && current.item.localFilePath != null) && !(items[i + 1].item.itemType == ItemType.IMAGE && items[i + 1].item.localFilePath != null)) {
                             val next = items[i + 1]
                             item(key = "pair_${current.item.id}_${next.item.id}") {
                                 Row(
@@ -292,6 +361,8 @@ fun TimelineScreen(
                                         DynamicItemTile(
                                             itemWithRelations = current,
                                             onClick = { onItemClick(current.item.id) },
+                                            onFavoriteToggle = { viewModel.toggleFavorite(current) },
+                                            onDeleteClick = { viewModel.deleteItem(current) },
                                             modifier = Modifier
                                                 .fillMaxWidth()
                                                 .fillMaxHeight()
@@ -301,6 +372,8 @@ fun TimelineScreen(
                                         DynamicItemTile(
                                             itemWithRelations = next,
                                             onClick = { onItemClick(next.item.id) },
+                                            onFavoriteToggle = { viewModel.toggleFavorite(next) },
+                                            onDeleteClick = { viewModel.deleteItem(next) },
                                             modifier = Modifier
                                                 .fillMaxWidth()
                                                 .fillMaxHeight()
@@ -313,7 +386,9 @@ fun TimelineScreen(
                             item(key = "single_${current.item.id}") {
                                 DynamicItemTile(
                                     itemWithRelations = current,
-                                    onClick = { onItemClick(current.item.id) }
+                                    onClick = { onItemClick(current.item.id) },
+                                    onFavoriteToggle = { viewModel.toggleFavorite(current) },
+                                    onDeleteClick = { viewModel.deleteItem(current) }
                                 )
                             }
                             i++
@@ -326,7 +401,7 @@ fun TimelineScreen(
                         TimelineSectionHeader(
                             title = "Vault Overview",
                             subtitle = "Categorized Stacks",
-                            itemCount = "${state.totalCount.coerceAtLeast(state.items.size)} total"
+                            itemCount = "${state.totalCount} total"
                         )
                         Spacer(modifier = Modifier.height(Spacing.Small))
                         Row(
@@ -354,9 +429,96 @@ fun TimelineScreen(
                             )
                         }
                     }
+
+                    item {
+                        Spacer(modifier = Modifier.height(80.dp))
+                    }
                 }
             }
         }
+    }
+}
+
+@Composable
+fun LatestSaveCard(
+    itemWithRelations: ItemWithRelations,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    val item = itemWithRelations.item
+    val hasValidFile = !item.localFilePath.isNullOrBlank() && File(item.localFilePath).exists()
+
+    Column(
+        modifier = modifier
+            .width(138.dp)
+            .shadow(1.dp, RoundedCornerShape(12.dp))
+            .clip(RoundedCornerShape(12.dp))
+            .background(PorcelainSheetWhite)
+            .border(1.dp, OutlineHairline, RoundedCornerShape(12.dp))
+            .clickable(onClick = onClick)
+            .padding(8.dp),
+        verticalArrangement = Arrangement.SpaceBetween
+    ) {
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(84.dp)
+                .clip(RoundedCornerShape(8.dp))
+                .background(PorcelainContainer),
+            contentAlignment = Alignment.Center
+        ) {
+            if (item.itemType == ItemType.IMAGE && hasValidFile) {
+                AsyncImage(
+                    model = File(item.localFilePath!!),
+                    contentDescription = item.title,
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier.fillMaxSize()
+                )
+            } else {
+                val icon = when (item.itemType) {
+                    ItemType.IMAGE -> Icons.Default.Image
+                    ItemType.ARTICLE -> Icons.Default.Link
+                    ItemType.NOTE -> Icons.Default.Edit
+                    ItemType.DOCUMENT -> Icons.Default.Description
+                    ItemType.VOICE -> Icons.Default.Mic
+                }
+                val iconColor = when (item.itemType) {
+                    ItemType.IMAGE -> ApricotOrange
+                    ItemType.ARTICLE -> CeruleanDark
+                    ItemType.NOTE -> IrisPrimary
+                    ItemType.DOCUMENT -> CeruleanDark
+                    ItemType.VOICE -> ApricotOrange
+                }
+                Icon(
+                    imageVector = icon,
+                    contentDescription = null,
+                    tint = iconColor,
+                    modifier = Modifier.size(24.dp)
+                )
+            }
+        }
+
+        Spacer(modifier = Modifier.height(6.dp))
+
+        Text(
+            text = item.title,
+            style = PandoraTypography.labelMedium,
+            fontWeight = FontWeight.SemiBold,
+            color = TextPrimary,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis,
+            fontSize = 12.sp
+        )
+
+        val folderName = itemWithRelations.folders.firstOrNull()?.name ?: "Vault"
+        Text(
+            text = folderName,
+            style = PandoraTypography.labelSmall,
+            color = TextTertiary,
+            fontSize = 10.sp,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis
+        )
     }
 }
 
@@ -368,41 +530,37 @@ fun TimelineSectionHeader(
     modifier: Modifier = Modifier
 ) {
     Row(
-        modifier = modifier.fillMaxWidth(),
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(vertical = Spacing.ExtraSmall),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(Spacing.Small)
-        ) {
+        Column {
             Text(
                 text = title,
-                style = PandoraTypography.headlineMedium,
-                fontSize = 19.sp,
-                fontWeight = FontWeight.SemiBold,
-                color = TextPrimary
+                style = PandoraTypography.headlineSmall,
+                color = TextPrimary,
+                fontWeight = FontWeight.Bold,
+                fontSize = 16.sp
             )
             Text(
                 text = subtitle,
                 style = PandoraTypography.bodySmall,
-                color = TextTertiary
+                color = TextSecondary,
+                fontSize = 12.sp
             )
         }
 
-        Box(
+        Text(
+            text = itemCount,
+            style = PandoraTypography.labelSmall,
+            color = IrisPrimary,
             modifier = Modifier
                 .clip(BadgeShape)
-                .background(PorcelainContainer)
-                .padding(horizontal = 6.dp, vertical = 2.dp)
-        ) {
-            Text(
-                text = itemCount,
-                style = PandoraTypography.labelSmall,
-                color = TextSecondary,
-                fontSize = 10.sp
-            )
-        }
+                .background(IrisFixed)
+                .padding(horizontal = 8.dp, vertical = 3.dp)
+        )
     }
 }
 
@@ -442,14 +600,16 @@ fun ArchiveSummaryCard(
 fun DynamicItemTile(
     itemWithRelations: com.pandora.app.core.database.dao.ItemWithRelations,
     onClick: () -> Unit,
+    onFavoriteToggle: (() -> Unit)? = null,
+    onDeleteClick: (() -> Unit)? = null,
     modifier: Modifier = Modifier
 ) {
     when (itemWithRelations.item.itemType) {
-        ItemType.ARTICLE -> ArticleTile(itemWithRelations = itemWithRelations, onClick = onClick, modifier = modifier)
-        ItemType.NOTE -> NoteTile(itemWithRelations = itemWithRelations, onClick = onClick, modifier = modifier)
-        ItemType.DOCUMENT -> PdfTile(itemWithRelations = itemWithRelations, onClick = onClick, modifier = modifier)
-        ItemType.VOICE -> VoiceMemoTile(itemWithRelations = itemWithRelations, onClick = onClick, modifier = modifier)
-        else -> NoteTile(itemWithRelations = itemWithRelations, onClick = onClick, modifier = modifier)
+        ItemType.IMAGE -> ImageTile(itemWithRelations = itemWithRelations, onClick = onClick, onFavoriteToggle = onFavoriteToggle, onDeleteClick = onDeleteClick, modifier = modifier)
+        ItemType.ARTICLE -> ArticleTile(itemWithRelations = itemWithRelations, onClick = onClick, onFavoriteToggle = onFavoriteToggle, onDeleteClick = onDeleteClick, modifier = modifier)
+        ItemType.NOTE -> NoteTile(itemWithRelations = itemWithRelations, onClick = onClick, onFavoriteToggle = onFavoriteToggle, onDeleteClick = onDeleteClick, modifier = modifier)
+        ItemType.DOCUMENT -> PdfTile(itemWithRelations = itemWithRelations, onClick = onClick, onFavoriteToggle = onFavoriteToggle, onDeleteClick = onDeleteClick, modifier = modifier)
+        ItemType.VOICE -> VoiceMemoTile(itemWithRelations = itemWithRelations, onClick = onClick, onFavoriteToggle = onFavoriteToggle, onDeleteClick = onDeleteClick, modifier = modifier)
+        else -> NoteTile(itemWithRelations = itemWithRelations, onClick = onClick, onFavoriteToggle = onFavoriteToggle, onDeleteClick = onDeleteClick, modifier = modifier)
     }
 }
-

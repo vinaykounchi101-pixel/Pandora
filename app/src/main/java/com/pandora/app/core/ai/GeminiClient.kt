@@ -110,6 +110,60 @@ class GeminiClient @Inject constructor(
         }
     }
 
+    suspend fun generateItemSummary(
+        itemTitle: String,
+        itemContent: String,
+        itemType: String
+    ): Result<String> = withContext(Dispatchers.IO) {
+        val apiKey = keystoreSecretManager.getGeminiApiKey()
+        if (apiKey.isNullOrBlank()) {
+            val preview = itemContent.ifBlank { itemTitle }
+            val fallbackSummary = "📌 **Artifact Overview ($itemType)**\n\n${preview.take(300)}${if (preview.length > 300) "..." else ""}\n\n💡 *Tip: Add your Gemini API key in Settings to unlock deep neural summaries, key takeaways, and interactive AI Q&A.*"
+            return@withContext Result.success(fallbackSummary)
+        }
+
+        try {
+            val endpoint = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=$apiKey"
+            val prompt = """
+                You are Pandora AI Copilot. Summarize the following $itemType from the user's personal vault.
+                Title: $itemTitle
+                Content: $itemContent
+                
+                Provide:
+                1. Executive Summary (2-3 sentences)
+                2. Key Takeaways (bullet points)
+                3. Actionable Insights or Connections
+                
+                Keep the tone elegant, concise, and structured.
+            """.trimIndent()
+
+            val requestBody = JSONObject().apply {
+                val contents = JSONArray().apply {
+                    put(JSONObject().apply {
+                        put("parts", JSONArray().apply {
+                            put(JSONObject().apply { put("text", prompt) })
+                        })
+                    })
+                }
+                put("contents", contents)
+            }
+
+            val responseText = executePostRequest(endpoint, requestBody.toString())
+            val responseJson = JSONObject(responseText)
+            val candidates = responseJson.optJSONArray("candidates")
+            if (candidates != null && candidates.length() > 0) {
+                val contentObj = candidates.getJSONObject(0).getJSONObject("content")
+                val parts = contentObj.getJSONArray("parts")
+                val text = parts.getJSONObject(0).getString("text")
+                Result.success(text)
+            } else {
+                Result.failure(Exception("Empty response from Gemini"))
+            }
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
     suspend fun sendScopedChatMessage(
         itemTitle: String,
         itemContent: String,
@@ -118,7 +172,16 @@ class GeminiClient @Inject constructor(
     ): Result<String> = withContext(Dispatchers.IO) {
         val apiKey = keystoreSecretManager.getGeminiApiKey()
         if (apiKey.isNullOrBlank()) {
-            return@withContext Result.failure(IllegalStateException("No Gemini API key configured. Please set your BYOK key in Settings."))
+            val contentLower = itemContent.lowercase()
+            val queryWords = userMessage.lowercase().split(" ").filter { it.length > 3 }
+            val matchFound = queryWords.any { contentLower.contains(it) }
+
+            val response = if (matchFound) {
+                "Based on this artifact, here is what was found regarding your question:\n\n\"${itemContent.take(200)}...\"\n\n💡 *Note: You are using local extraction. Configure your Gemini API key in Settings for full natural language conversation.*"
+            } else {
+                "I am analyzing \"$itemTitle\".\n\nContent excerpt:\n${itemContent.take(150)}...\n\n💡 *Tip: Add your Gemini API key in Settings to chat freely and extract deep insights.*"
+            }
+            return@withContext Result.success(response)
         }
 
         try {
@@ -127,7 +190,7 @@ class GeminiClient @Inject constructor(
             val contentsArray = JSONArray()
             
             // System instructions context
-            val systemContext = "You are Pandora Copilot. You are discussing a specific item in the user's personal vault titled '$itemTitle'.\nItem Content:\n$itemContent"
+            val systemContext = "You are Pandora AI Copilot. You are discussing a specific item in the user's personal vault titled '$itemTitle'. Answer the user's questions thoughtfully, accurately, and concisely based on this content.\nItem Content:\n$itemContent"
 
             contentsArray.put(JSONObject().apply {
                 put("role", "user")
@@ -138,7 +201,7 @@ class GeminiClient @Inject constructor(
             contentsArray.put(JSONObject().apply {
                 put("role", "model")
                 put("parts", JSONArray().apply {
-                    put(JSONObject().apply { put("text", "Understood. I will answer questions specifically grounded in this vault document.") })
+                    put(JSONObject().apply { put("text", "Understood. I will answer all questions accurately and concisely based on '$itemTitle'.") })
                 })
             })
 

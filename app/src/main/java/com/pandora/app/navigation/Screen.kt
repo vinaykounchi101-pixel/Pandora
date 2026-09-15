@@ -4,6 +4,7 @@ sealed class Screen(val route: String) {
     data object Timeline : Screen("timeline")
     data object Organize : Screen("organize")
     data object Search : Screen("search")
+    data object PandoraAi : Screen("pandora_ai")
     data object Explore : Screen("explore")
     data object Settings : Screen("settings")
     data object ItemDetail : Screen("item_detail/{itemId}") {

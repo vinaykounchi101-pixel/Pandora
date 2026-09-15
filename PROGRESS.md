@@ -25,11 +25,17 @@
 | **Phase 10** | **Design System Spacing & Grid Polish** | ✅ Completed | Implemented 4dp/8dp mathematical spacing grid (`Spacing.kt`), structured corner hierarchy (`Shape.kt`), decoupled navigation viewport, and removed AI styling artifacts. |
 | **Phase 11** | **Advanced Ingestion, Security & Integrity Engine** | ✅ Completed | Integrated Inbound Android Share Sheet (`ACTION_SEND`), native Speech-to-Text dictation (`VoiceRecognitionHelper`), Proactive Ingestion Duplicate Guard (`DuplicateGuardHelper`), Topological FK Safe Restore (`PandoraBackupManager`), and 3x3 Canvas Pattern Lock (`PatternLockView`). Updated PRD & SRS. |
 | **Phase 12** | **Full Interactivity & Dynamic Grid Resolution** | ✅ Completed | Replaced static hardcoded timeline filters with dynamic adaptive Bento partitioning over live SQLite Room database; wired Jetpack Compose backstack `findStartDestination` navigation; added interactive folder/collection creation dialogs; and wired native system share intents. |
+| **Phase 13** | **Visual Gallery View & 1-Tap Artifact Reader** | ✅ Completed | Implemented "Latest Saves" horizontal spotlight reel with immediate front-and-center visibility for newest captures; integrated Coil `AsyncImage` real photo rendering for gallery cards and full reader; wired 1-tap card opening across all gallery tiles to the dynamic `ItemDetailScreen`. |
+| **Phase 14** | **Dummy Data Elimination & Universal Action Menu Wiring** | ✅ Completed | Fully eliminated mock/seed fallbacks and hardcoded numbers across Timeline, Organize, Reader, and Capture sheets. Wired 3-dots overflow action menu on all cards (Timeline/Gallery) and Reader top bar supporting Edit, Favorite toggle, Folder assignment, Tag management, Copy, Native Share Intent, and Delete with database execution. |
+| **Phase 15** | **Universal Quick Add & Multi-Type Ingestion Hub** | ✅ Completed | Built comprehensive type selector dropdown in Quick Add (`Personal Note`, `Image / Screenshot`, `PDF / Document`, `Web Article / Link`, `Voice Memo`) with native photo/PDF pickers, speech-to-text dictation, auto-filename extraction, folder/tag association, and FileProvider document preview. |
+| **Phase 16** | **Pandora AI Flagship Copilot & Scoped Q&A Hub** | ✅ Completed | Transformed 4th bottom nav tab into flagship "Pandora AI". Features 2-phase workflow: Phase 1 artifact picker with type filters (`All`, `Notes`, `Photos`, `PDFs`, `Articles`, `Voice`) and instant photo/PDF pickers; Phase 2 automatic Executive Summary generation with copy action, 1-tap suggested question prompt chips, and multi-turn interactive AI chat scoped to the selected item. |
+| **Phase 17** | **Pandora AI Multi-Scope Selection (Folders, Collections, Links)** | ✅ Completed | Expanded Pandora AI scope selection to support Folders, Collections, and Web Links. Added segmented Scope Tabs (`Artifacts`, `Folders`, `Collections`), direct `Paste Link` quick ingestion dialog, folder/collection context aggregation for executive summaries and deep multi-turn scoped Q&A. Verified live on physical device. |
 
 ---
 
 ## 📱 Hardware & OS Verification
 - **Device Model**: Motorola Edge 60 Fusion (Android 14 / Target SDK 35)
 - **Device ID**: `ZA2239H4J9`
-- **Execution**: Verified on-device UI rendering, animations, modal bottom sheets, navigation flows, zero crashes, and editorial layout balance.
+- **Execution**: Verified on-device UI rendering, animations, modal bottom sheets, navigation flows, zero crashes, live three-dots action menus, and editorial layout balance.
+
 

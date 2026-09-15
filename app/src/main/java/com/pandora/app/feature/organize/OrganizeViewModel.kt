@@ -26,7 +26,7 @@ data class OrganizeUiState(
     val folders: List<FolderWithSubfoldersAndItems> = emptyList(),
     val collections: List<CollectionWithItems> = emptyList(),
     val tags: List<TagWithItemCount> = emptyList(),
-    val expandedFolderIds: Set<Long> = setOf(1L, 4L),
+    val expandedFolderIds: Set<Long> = emptySet(),
     val isLoading: Boolean = false
 )
 
@@ -36,7 +36,7 @@ class OrganizeViewModel @Inject constructor(
 ) : ViewModel() {
 
     private val _activeTab = MutableStateFlow(OrganizeTab.FOLDERS)
-    private val _expandedFolderIds = MutableStateFlow(setOf(1L, 4L))
+    private val _expandedFolderIds = MutableStateFlow(emptySet<Long>())
 
     val uiState: StateFlow<OrganizeUiState> = combine(
         _activeTab,

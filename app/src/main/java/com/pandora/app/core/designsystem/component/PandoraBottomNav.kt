@@ -47,7 +47,7 @@ enum class NavDestination(val route: String, val label: String, val icon: ImageV
     TIMELINE("timeline", "Timeline", Icons.Default.CalendarToday),
     ORGANIZE("organize", "Organize", Icons.Default.FolderOpen),
     SEARCH("search", "Search", Icons.Default.Search),
-    EXPLORE("explore", "Explore", Icons.Default.AutoAwesome)
+    PANDORA_AI("pandora_ai", "Pandora AI", Icons.Default.AutoAwesome)
 }
 
 @Composable
@@ -62,8 +62,7 @@ fun PandoraBottomNav(
             .background(PorcelainCanvas.copy(alpha = 0.98f))
             .border(width = 1.dp, color = OutlineHairline)
             .navigationBarsPadding()
-            .height(58.dp)
-            .padding(horizontal = Spacing.Small),
+            .padding(horizontal = Spacing.Small, vertical = 6.dp),
         horizontalArrangement = Arrangement.SpaceAround,
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -86,7 +85,7 @@ fun PandoraBottomNav(
                         interactionSource = remember { MutableInteractionSource() },
                         indication = null
                     ) { onNavigate(destination) }
-                    .padding(vertical = 2.dp),
+                    .padding(vertical = 4.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center
             ) {
